@@ -1,0 +1,14 @@
+---
+title: "post abandonados"
+description: "Entradas que no quise actualizar"
+author: "David Humberto Jiménez S."
+date: "2021-12-16"
+categories: [code, visualization]
+#image: "sismo.png"
+draft: true
+---
+
+Esta es la 3ra iteración de este blog. Ahora está montado sobre [*Quarto*](https://quarto.org/docs/websites/website-blog.html#about-page).
+
+Hubo 
+

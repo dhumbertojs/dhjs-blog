@@ -1,0 +1,27 @@
+---
+title: "About"
+image: profile_me.jpg
+about:
+  template: jolla
+  links:
+    - icon: twitter
+      text: Twitter
+      href: https://twitter.com/dhumbertoj
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/dhumbertojs/
+    - icon: github
+      text: Github
+      href: https://github.com/dhumbertojs
+
+---
+
+Welcome!
+
+I'm David, an open data enthusiast from Mexico. With a bachelor's degree in Political Science from [ITAM](https://politica.itam.mx/es/conoce-la-carrera-politica) and experience in public administration, my journey into the world of data analysis and civic tech has been an exciting one.
+
+This blog is more than just a collection of posts – it's my data science portfolio, intended to showcase my projects, skills, and experiences. I believe in making the complex world of data science accessible, and here, I'll be sharing insights, tricks, and real-world applications.
+
+From text analysis to civic tech, I'll delve into projects that have shaped my learning and career. My goal is not just to educate, but to inspire and connect. If you have ideas to explore or challenges you think I can tackle, feel free to send me a DM on Twitter.
+
+Let's make data science more engaging and, together, unravel the endless possibilities it holds!
