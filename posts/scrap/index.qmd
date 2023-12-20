@@ -1,0 +1,279 @@
+---
+title: "Scrap! o como extraer info de páginas"
+description: "No quieres copiar y pegar páginas donde están los datos y luego pasar horas limpiandolos en excel? Copia y pega este script para automatizar aunque sea un poco el proceso"
+author: "David Humberto Jiménez S."
+date: "2021-11-01"
+date-modified: "2023-11-30"
+categories: [code, visualization, politics, spanish]
+#image: "sismo.png"
+---
+
+# ¡Holi!
+
+He estado perdido, igual y no lo notaron, pero estoy vivo. Dos borradores de post, que están pendientes, un montón de trabajo, trámites de la escuela y demás cosas en el camino, *I'm back*.
+
+El otro día me pidieron hacer una relación de otro proyecto en el que estaba colaborando [Análisis de las elecciones federales 2021](https://analisiselectoral2021.juridicas.unam.mx) y pensé: "a, pues eso sale en chinga con R", pero hace mucho no hago scraping, no pude y terminé haciéndolo a mano.
+
+Para que no les pase lo que a mí, voy a explicarles todo lo que sé esperando que no vuelvan a cambiar la *library* y lo que vean aquí no funcione (como me pasó en los 3 tutoriales de hace menos de 2 años que revisé).
+
+```{r}
+library(purrr)
+library(rvest)
+library(dplyr)
+library(stringr)
+```
+
+Entonces, lo primero siempre es cargar las *libraries* que vamos a utilizar. El paquete nuevo es [*rvest*](https://rvest.tidyverse.org/) que literalmente se llama así por *harvest* para "cosechar" los datos de una página web. Todos los paquetes de *R* son superñoños, por si no se habían dado cuenta.
+
+## Scrapping!
+
+```{r}
+url <- "https://analisiselectoral2021.juridicas.unam.mx/publicaciones?page="
+
+dada <- paste0(url, "0") # enlace con las publicciones más recientes
+```
+
+Como ya revisé cuántas páginas había en ese portal, sé que van del 0 al 6. Sigo buscando un método para no tener que contarlo a mano, así que avísenme.
+
+Ahora, lo que hay que hacer es entender cómo se organiza una página web. Hay personas mucho más hábiles que yo para eso, yo solo les sugiero que en la página que seleccionen den clic derecho en cualquier lado y seleccionen inspeccionar. Esto funciona si utilizas chrome.
+
+Ahora, si ustedes como yo no tienen idea de páginas web, html y CSS... solo tienen que buscar lo que diga *class* y probar.
+
+```{r}
+titulos <- read_html(dada) %>% # Con esta función hacemos que R "lea" la página
+    html_nodes(".titulo-publicacion-l") %>% # Aquí seleccionamos el "nodo" o clase que queremos recuperar
+    html_text() %>% # y con esto lo convertimos a texto
+    as_tibble() %>%
+    rename(titulo = value)
+```
+
+Este es un vector de texto, ¿se acuerdan de las primeras entradas y como una serie de vectores acomodados crean un dataframe? Pues aquí es donde rinde sus frutos entender la diferencia. Además, el scrapping funciona por posiciones, así que si la página está lógicamente construida podemos extraer sin problemas la información necesaria
+
+```{r}
+autor <- read_html(dada) %>%
+    html_nodes(".autores") %>%
+    html_text() %>%
+    as_tibble() %>%
+    rename(autor = value)
+```
+
+Entonces los títulos ya están, los autores ya están, pero qué pasa si quiero los enlaces a las notas? Bueno, es un poco más complicado, y no es tan general, pero puedes seleccionar más de un nodo y en lugar del texto, los atributos.
+
+Además, no podemos olvidar las fechas. 
+
+```{r}
+enlaces <- read_html(dada) %>%
+    html_nodes(".views-field-title-1 a") %>%
+    html_attr("href") %>%
+    as_tibble() %>%
+    rename(enlaces = value)
+
+fechas <- read_html(dada) %>%
+    html_nodes(".fuente-1 time") %>%
+    html_text() %>%
+    as_tibble() %>%
+    rename(fecha = value)
+
+```
+
+Vamos a tener todo en un olo data frame para poder consultarlo.
+
+```{r}
+detalle <- "https://analisiselectoral2021.juridicas.unam.mx"
+
+tabla <- bind_cols(titulos, autor, enlaces) %>%
+    mutate(
+        enlaces = paste0(detalle, enlaces)
+    )
+```
+
+Tachán!! Listo, un scrap sencillo pero poderoso. Sin embargo, hay muchas páginas. Cómo aún no me sé una manera de contarlas automáticamente, pero sé que son 7 páginas de publicaciones, pues vamos a hacer un loop, o mejor dicho un map.
+
+```{r}
+lista <- map(
+    url,
+    ~ paste0(.x, seq(0, 6, by = 1))
+) %>%
+    unlist()
+lista
+```
+
+El primero que necesitamos es bastante sencillo, tenemos la dirección lista para pegarle los números. Como no la vamos a hacer a mano, hay que hacer algo. Yo opté por crearlo con un map, para que luego se convierta en lista y al momento de hacerle el *unlist* se convierte en caracteres. La otra opción sería crear un data frame con una columna de número de 0 al 6, luego pegar la columna url, pegar ambas, quitar lo que no sirve o seleccionar la nueva columna y transformarla a vector o en su defecto, utilizar *dataframe$columna*. 
+
+Si se les ocurre otra manera, avísenme, que siempre se aprende algo nuevo.
+
+```{r}
+titulos <- map(
+    lista,
+    ~ read_html(.x) %>%
+        html_nodes(".titulo-publicacion-l") %>%
+        html_text() %>%
+        as_tibble() %>%
+        rename(titulo = value)
+) %>%
+    bind_rows()
+
+autores <- map(
+    lista,
+    ~ read_html(.x) %>%
+        html_nodes(".autores") %>%
+        html_text() %>%
+        as_tibble() %>%
+        rename(autor = value)
+) %>%
+    bind_rows()
+
+enlaces <- map(
+    lista,
+    ~ read_html(.x) %>%
+        html_nodes(".views-field-title-1 a") %>%
+        html_attr("href") %>%
+        as_tibble() %>%
+        rename(enlaces = value)
+) %>%
+    bind_rows()
+
+fechas <- map(
+    lista,
+    ~ read_html(.x) %>%
+        html_nodes(".fuente-1 time") %>%
+        html_text() %>%
+        as_tibble() %>%
+        rename(fecha = value)
+) %>%
+    bind_rows()
+```
+
+```{r}
+final <- cbind(titulos, autores, fechas, enlaces) %>%
+    mutate(
+        enlaces = paste0(detalle, enlaces)
+    )
+head(final)
+```
+
+Y listo!!! Tenemos una base de datos con los nombres de las publicaciones, autores, fechas y enlaces.
+
+Pero... creo que le podemos sacar más jugo a esto... Por ejemplo, que tal si de una vez recuperamos los textos de las publicaciones? Que por qué? Por la gloria de Satán! Digo, porque podemos utilizar nuestras herramientas de análisis de texto y ver si hay cosas interesantes de esta manera, o hay que leer todo el texto para entenderlo.
+
+## Scrapping y textos
+
+Entonces, ¿cómo le hacemos? Ya tenemos la lista de enlaces
+
+```{r}
+publicaciones <- map(
+    final$enlaces,
+    ~ read_html(.x) %>%
+        html_nodes(".col-12") %>% # Esta es la clase que buscamos
+        html_text() %>%
+        .[2] %>% # solo necesitamos el segundo elemento de la lista que arroja
+        as_tibble() %>%
+        rename(texto = value) %>%
+        mutate(enlaces = .x)
+) %>% # aunque el scrapping funciona por posiciones, a veces me da miedo y le genero identificadores para unir los DF
+    bind_rows()
+
+final <- left_join(final, publicaciones)
+```
+
+Y con eso, hemos leído las 70 publicaciones. Pero, hay un pequeño problema: aparece el título, tema, autor, fecha, un *disclaimer* y una leyenda para descargar un archivo. Esto porque el scrapping depende mucho de como esté armada la página. Como utilizamos una clase que agrupa todo el texto, se incluyen estos elementos.
+
+```{r}
+library(tm)
+library(tidyr)
+library(ggplot2)
+library(syuzhet)
+library(tidytext)
+library(lubridate)
+```
+
+Igual que en un par de post anteriores, [este](https://dhumbertojs.github.io/posts/2020-12-09-a-3-aos-del-sismo-desde-las-solicitudes-de-informacin/), [este](https://dhumbertojs.github.io/posts/2020-12-09-anlisis-de-texto-sentimientos/) y [este](https://dhumbertojs.github.io/posts/2020-12-09-das-sin-ti-anlisis-de-texto/), necesitamos estas dos libraries para analizar los textos.
+
+```{r}
+final %>%
+    unnest_tokens(palabra, texto) %>%
+    filter(!palabra %in% stopwords("es")) %>%
+    count(palabra, sort = T) %>%
+    mutate(palabra = reorder(palabra, n)) %>%
+    top_n(20) %>%
+    ggplot(aes(x = n, y = palabra)) +
+    geom_bar(stat = "identity") +
+    theme_classic() +
+    labs(
+        x = "", y = "",
+        title = "Palabras más frecuentes",
+        subtitle = "En todas las publicaciones"
+    )
+```
+
+Como no es ninguna sorpresa, "INE" y "electoral" son las palabras más frecuentes en todas las publicaciones. Pero, tenemos manera de revisar el top 10 de cada autor. Sin embargo, antes, vamos a ver cuantas publicaciones tiene cada autor y las publicaciones por mes, nomás porque sí.
+
+```{r}
+final %>%
+    count(autor, sort = T)
+```
+
+```{r}
+final %>%
+    mutate(fecha = as_date(fecha)) %>%
+    group_by(mes = month(fecha)) %>%
+    count()
+```
+
+Resulta interesante que el máximo de publicaciones es 9 y el mínimo es 1. Además, el mes con mayor número de notas fue junio.
+
+```{r}
+final %>%
+    unnest_tokens(palabra, texto) %>%
+    filter(!palabra %in% stopwords("es")) %>%
+    count(autor, palabra, sort = T) %>%
+    group_by(autor) %>%
+    mutate(prop = n / sum(n)) %>%
+    top_n(7) %>%
+    ggplot(aes(x = prop, y = palabra, fill = autor)) +
+    facet_wrap(. ~ autor, scales = "free_y") +
+    geom_bar(stat = "identity") +
+    theme_classic() +
+    theme(legend.position = "blank") +
+    labs(
+        x = "", y = "",
+        title = "Proporción de palabras más frecuentes",
+        subtitle = "por autor"
+    )
+```
+
+Ahora bien, la gráfica anterior era solo por palabras más frecuentes. Pero, como sabemos hay autoras que tuvieron más publicaciones. Por esta razón utilicé el top 10 de palabras más frecuentes como proporción del total de palabras de cada autora. El outlier es Javier Martín Reyes porque tiene una sola publicación. 
+
+Y estas son las cosas sencillas que podemos lograr con un web scrapping y las herramientas que vamos acumulando. Por ejemplo, análisis de sentimientos! No hay que olvidar que la función para esto tarda más de lo normal. Entonces no desesperen.
+
+```{r}
+text <- final %>%
+    unnest_tokens(palabra, texto) %>%
+    filter(!palabra %in% stopwords("es"))
+
+text_nrc <- get_nrc_sentiment(char_v = text$palabra, language = "spanish")
+
+bind_cols(text, text_nrc) %>%
+    pivot_longer(
+        cols = 6:15
+    ) %>%
+    group_by(name) %>%
+    summarise(total = sum(value)) %>%
+    ungroup() %>%
+    mutate(name = reorder(name, total)) %>%
+    ggplot(aes(x = name, y = total, fill = name)) +
+    geom_bar(stat = "identity") +
+    scale_fill_manual(
+        breaks = c("disgust", "surprise", "anger", "joy", "anticipation", "fear", "sadness", "trust", "positive", "negative"),
+        values = c("#24D204", "#06CBBE", "#CB0606", "#FBFE00", "#FF9200", "#46BF5F", "#5479C3", "#01FF4C", "#FF00DC", "#000000")
+    ) +
+    theme_classic() +
+    labs(
+        title = "Análisis de sentimientos en todas las publicaciones",
+        subtitle = "Syuzhet",
+        x = "", y = ""
+    ) +
+    theme(legend.position = "blank")
+```
+
+Todo apunta a que las investigadoras involucradas en este proyecto confían en las decisiones tomadas por el Tribunal Electoral y el INE. Después de todo, son los organismos que deciden la política electoral en la práctica. A pesar de todo, aún hay confianza en las instituciones. Cualquier cosa mándenme un [DM](https://twitter.com/dhumbertoj)

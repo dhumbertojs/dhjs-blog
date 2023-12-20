@@ -1,0 +1,334 @@
+---
+title: "Interrupción Legal del Embarazo en la Ciudad de México"
+description: "Mini tutorial de como utilizar datos cargados en un google drive en formato csv"
+author: "David Humberto Jiménez S."
+date: "2018-04-18"
+date-modified: "2023-11-22"
+categories: [code, analysis, visualization, pro-choice]
+image: "ile.png"
+---
+
+Este post es una actualización y revisión de un post de la primera iteración de este blog.
+
+## Datos sobre ILE en la Ciudad de México
+
+El 24 de abril, es decir, el viernes de la semana pasada, en la Ciudad de México se cumplieron 13 años de la despenalización de la Interrupción Legal del Embarazo. Adicionalmente, desde el año pasado la ADIP ha abierto los datos respecto a las interrupciones en la Ciudad de México en clínicas y hospitales de la Secretaría de la Salud de la Ciudad de México.
+
+Por eso, vamos a revisar la base de datos actualizada disponible en el sitio de la [ADIP](https://datos.cdmx.gob.mx/explore/dataset/interrupcion-legal-del-embarazo/table/). Para hacer esto, vamos a combinar los datos que están segmentados por periodos: 
+- 2016 a 2018
+- 2019 a 2021
+- 1er semestre 2022
+
+Por razones de facilidad y replicabilidad, descargué los datos y los subí a una carpeta de google drive
+
+```{r}
+library(dplyr)
+
+origen_16 <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ_HoUvYXipMvAB0DkLcMbTNWWVYx-9k4CQomTXmT04yVOrqunILg5CnEWDVRaDniJavSalb0bwOX4e/pub?output=csv"
+
+d16 <- read.csv(origen_16, stringsAsFactors = F, fileEncoding = "UTF-8") %>%
+    mutate_all(as.character)
+
+origen_19 <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vTKDzF5efQP58F0JhV6iaQavOTIEc4yRJcPIrr3Hj_fOdlPj34bBVWEkHhjEbi0dN7QU0VxbOabrjOE/pub?output=csv"
+
+d19 <- read.csv(origen_19, stringsAsFactors = F, fileEncoding = "UTF-8") %>%
+    mutate_all(as.character)
+
+origen_22 <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vSioEYHSp8R0bXmDA8N3KTRcFCjwodY34gnR9-vBq56b6ATUWyTbuUsik3tLniRHzFTGmd69NTubWS_/pub?output=csv"
+
+d22 <- read.csv(origen_16, stringsAsFactors = F, fileEncoding = "UTF-8") %>%
+    mutate_all(as.character)
+
+datos <- bind_rows(d16, d19, d22)
+```
+
+En el *chunk* anterior, los objetos llamados **origen** son los enlaces a las bases de datos. La función **read.csv** tiene varios argumentos (como todas las funciones para leer bases de datos): 
+- **file** es el primero y más importante, y es desde donde se va a leer la base de datos. Puede escribirse directamente. 
+- **stringsAsFactors** es para que las variables que son texto no se conviertan en factores (un factor es una variable de categorías mutuamente excluyentes). 
+- **fileEncoding** es para leer bien los acentos y carácteres especiales. UTF-8 y Windows 1252 son los más comunes.
+
+Adicionalmente, porque en un archivo la variable "fecha de primera menstruación" está almacenado como texto mientras que en otro como numérico, no se pueden combinar sin transformar alguno de los *data frames*. Por eso utilizó la función **mutate_all** que modifica **todas** las variables, en este caso para convertirlas en texto (*strings*).
+
+```{r}
+library(DT)
+datatable(head(datos), rownames = F, class = "display")
+```
+
+Si quieren saber que significan las variables, pueden descargar el [diccionario de datos](https://datos.cdmx.gob.mx/dataset/3688e08c-029f-4b47-bb69-f2bc0ecf8bd1/resource/9d74bab2-8a5f-40f3-b991-ab27cc3d6412/download/diccionario-de-datos-ile.csv). Un Diccionario de datos es el estándar para explicar los nombres de las variables.
+
+Ahora, los paquetes. Usualmente, los paquetes van al principio del código y van juntos.
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(janitor)
+```
+
+Vamos a hacer tablas con el conteo por las variables. Como es un ejemplo, trataré de hacer cosas basicas. Esto se hace con el paquete [janitor](https://garthtarr.github.io/meatR/janitor.html). Además de hacer tablas, el paquete **Janitor** "limpia" las bases de datos. En este caso, vamos a cambiar los nombres de las variables: la variable Año suele tener
+
+```{r}
+datos <- clean_names(datos)
+
+names(datos)
+```
+
+```{r}
+tabyl(datos, anio)
+```
+
+Esta primera tabla muestra el número de procedimientos por año y el porcentaje del total. La función *tabyl* proviene del paquete **janitor**.
+
+```{r}
+tabyl(datos, anio, mes)
+```
+
+En este caso, la tabla no sale tan pulcra. Por esa razón vamos a hacerla con dplyr.
+
+```{r}
+tabla <- datos %>%
+    mutate(cont = 1) %>%
+    group_by(anio, mes) %>%
+    summarise(total = sum(cont))
+
+datatable(tabla, rownames = F)
+```
+
+Esta tabla se hizo con **dplyr**. Este paquete nos permite manipular bases de datos de manera sencilla. Hay que pensar el procesamiento como pasos secuenciales. Es igual que la rutina de la mañana: te despiertas, revisas el teléfono, vas al baño, desayunas, etc. 
+
+En este caso, a la base "datos" le aplicaremos distintas operaciones gracias al operador pipe (**%>%**). Es decir a la base de datos le haremos un mutate(crear una nueva variable) luego ( %>% ) agrupamos las variables año y mes; para finalizar ( %>% ) le hacemos un summarise (colpasamos la base de datos) en ese caso sumaremos la variable cont (que es ponerle un 1 a cada renglón) por año y mes.
+
+Como ya habrán notado, los meses están desordenados.
+
+## Gráficas
+
+```{r}
+graf <- datos %>%
+    mutate(cont = 1) %>%
+    group_by(anio, mes) %>%
+    summarise(total = sum(cont)) %>%
+    ungroup() %>%
+    group_by(anio) %>%
+    mutate(
+        tot = sum(total),
+        porc = total / tot
+    ) %>%
+    ungroup() %>%
+    mutate(
+        mes = factor(mes,
+            levels = c(
+                "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+            )
+        ),
+        anio = factor(anio,
+            levels = c(2016:2022)
+        )
+    )
+```
+
+Este código calcula el porcentaje por mes y año. Además, ordena los meses y el año como factores.
+
+```{r}
+ggplot(graf, aes(x = mes, y = porc, group = anio)) +
+    geom_line(aes(color = anio)) +
+    scale_y_continuous(
+        labels = scales::percent_format(),
+        limits = c(0.05, 0.15)
+    )
+```
+
+Esta gráfica muestra el porcentaje por mes y por año. En esta gráfica utilizo lineas para mostrar la distribución de interrupciones por mes para los años disponibles. Esto a través del **geom_line** en donde cada año tiene un color distinto. 
+
+Además, en **scale_y_continous** defino do parametros: *labels*, que es como se presentan los números, en este caso como porcentaje; y *limits* muestra que parte de la gráfica se debe visualizar. En este caso escogi entre el 5% y el 15% para ver los detalles. Mientras que en el caso de *scales::*, esta es una forma de utilizar una función de un paquete sin tener que poner **library**. ¿Qué por qué necesitamos esto? A veces cargar un paquete es demasiado para nuestra computadora, piensa que un paquete es como un foco, no prendes un foco de un cuarto en el que no estás.
+
+```{r}
+graf2 <- datos %>%
+    mutate(cont = 1) %>%
+    filter(anio > 2015 & anio < 2022) %>%
+    group_by(anio, mes) %>%
+    summarise(total = sum(cont)) %>%
+    ungroup() %>%
+    group_by(anio) %>%
+    mutate(
+        tot = sum(total),
+        porc = total / tot
+    ) %>%
+    ungroup() %>%
+    mutate(
+        mes = factor(mes,
+            levels = c(
+                "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+            )
+        ),
+        anio = factor(anio,
+            levels = c(2016:2021)
+        )
+    )
+```
+
+Quitamos el año en cuestión y volvemos a graficar.En este caso, no filtramos utilizando el mismo objeto debido a que un factor no se puede filtrar.
+
+```{r}
+ggplot(graf2, aes(x = mes, y = porc, group = anio)) +
+    geom_line(aes(color = anio)) +
+    geom_point(aes(color = anio)) +
+    scale_y_continuous(
+        limits = c(0.05, 0.15),
+        labels = scales::percent_format()
+    ) +
+    labs(
+        title = "Porcentaje de procedimientos mensuales en la CDMX",
+        subtitle = "2016 al 2021",
+        x = "", y = "",
+        color = "Año"
+    ) +
+    theme_classic() +
+    theme(
+        axis.text.x = element_text(angle = 45, hjust = 0.9),
+        legend.position = "bottom"
+    )
+```
+
+En este caso, agregamos nuevos argumentos en **theme**. *axis.text.x* es para modificar como vemos las eetiquetas del eje de las x (el eje horizontal). En este caso, lo giré 45° y lo ajusté para que no se sobreponga.
+
+Aunque son cosas sencillas, pueden ser interesantes para pensar y presentar puntos. Y aprovechando que tenemos una base con tantas variables, podemos jugar con los datos y ver que otras cosas aparecen. Por ejemplo:
+
+```{r}
+ggplot(datos, aes(x = estado_civil, y = as.numeric(edad))) +
+    geom_boxplot() +
+    labs(
+        title = "Diagrama de caja y brazos por estado civil",
+        x = "", y = "Edad"
+    ) +
+    scale_y_continuous(breaks = seq(10, 60, by = 2)) +
+    coord_flip()
+```
+
+Un diagrama de caja y brazos (*boxplot*) nos muestra de manera gráfica los cuartiles de una variable. Es decir, los extremos de la caja representan el primer y tercer cuartil. Y la barra dentro de la caja representa el promedio. Mientras que los puntos representan *outliers* o valores atípicos.
+
+Como ya vimos cambiar la escala del eje es fácil, pero también podemos agregarle más detalle para interpretarla mejor: *breaks* permite modificar la escala, en este caso utilicé una secuencia (**seq**) del 10 al 60 de 2 en 2.
+
+Por esta razón, esta gráfica muestra la distribución por edad de acuerdo al estado civil reportado para el procedimiento. Algo que salta a la vista es el hecho de que la mujer más joven sometida a un procedimiento es de 12 años.
+
+Por último, vamos a hacer esta misma gráfica, pero la separaremos por años.
+
+```{r}
+ggplot(datos, aes(x = estado_civil, y = as.numeric(edad))) +
+    geom_boxplot() +
+    labs(
+        title = "Diagrama de caja y brazos por estado civil",
+        x = "", y = "Edad"
+    ) +
+    scale_y_continuous(breaks = seq(10, 60, by = 2)) +
+    coord_flip() +
+    facet_grid(anio ~ .)
+```
+
+La función **facet_grid** puede ser utilizado de manera fija (vertical u horizontal) o ajustarlo dentro de un rectángulo con *facet_wrap*. Los argumentos son los mismos en ambos casos: (variable1 ~ variable2). Con esto quiero decir que puede separar las gráficas por otras variables. En este caso, vemos los diagramas de caja y brazos por año. Pero así se ve muy feo, probemos otra configuración de los *facet*
+
+```{r}
+ggplot(datos, aes(x = estado_civil, y = as.numeric(edad))) +
+    geom_boxplot() +
+    labs(
+        title = "Diagrama de caja y brazos por estado civil",
+        x = "", y = "Edad"
+    ) +
+    scale_y_continuous(breaks = seq(10, 60, by = 5)) +
+    theme(axis.text.x = element_text(angle = 90)) +
+    coord_flip() +
+    facet_grid(cols = vars(as.numeric(anio)))
+```
+
+Aquí le especificamos a **R** que ponga un número de columnas igual al de nuestra variable de interés (como no la podemos "pasar" directamente utilizamos *vars* de dplyr). 
+
+```{r}
+ggplot(datos, aes(x = nivel_edu, y = as.numeric(numero_hijos))) +
+    geom_boxplot() +
+    scale_y_continuous(breaks = seq(0, 10, by = 1)) +
+    labs(
+        title = "Distribución de hijes por nivel educativo",
+        x = "", y = "Número de hijes"
+    ) +
+    coord_flip()
+```
+
+De manera similar, podemos observar el número de hijes por nivel educativo de las pacientes. Hay muchísimos valores atípicos. 
+
+## Función summary, correlación y diagramas de dispersión
+
+Asimismo, algo que no he mencionada claramente es que después de usar la función **mutate_all** todas las variables se modificaron, para convertirse en *strings* (o texto) y esto no siempre es útil al momento de gráficar. Por eso, si observaron, utilicé la función **as_numeric** dentro de las gráficas: para especificar que se trataba de una variable numérica.
+
+Para hacer más análisis, es conveniente conocer las distribuciones de las variables y su relación entre ellas. Por lo que convertiremos aquellas variables numéricas y exploraremos el contenido de ese conjunto de datos.
+
+```{r}
+head(datos)
+```
+
+Cuando no conocemos el contenido de los datos siempre es útil ver los primeros renglones de un conjunto, y exactamente eso es lo que hace la función **head**.
+
+```{r}
+datos <- datos %>%
+    mutate(
+        fecha_ingreso = lubridate::ymd(fecha_ingreso),
+        edad = as.numeric(edad),
+        edad_primera_menstruacion = as.numeric(edad_primera_menstruacion),
+        edad_inicio_vida_sexual = as.numeric(edad_inicio_vida_sexual),
+        fecha_ultima_menstruacion = lubridate::dym(fecha_ultima_menstruacion),
+        semanas_embarazo = as.numeric(semanas_embarazo),
+        numero_hijos = as.numeric(numero_hijos),
+        numero_embarazos = as.numeric(numero_embarazos),
+        numero_abortos = as.numeric(numero_abortos),
+        numero_partos = as.numeric(numero_partos),
+        fecha_primera_valoracion = lubridate::dmy(fecha_primera_valoracion),
+        numero_consultas = as.numeric(numero_consultas),
+        semanas_gestacion_usg = as.numeric(semanas_gestacion_usg),
+    )
+
+summary(datos)
+```
+
+La función **summary** muestra las medidas de dispersión de las variables numéricas. Estas son: mínimo, primer cuartil, mediana, promedio (media), tercer cuartil y máximo. Para ampliar el análisis y tener mayor precisión, calcularemos la matriz de correlación de las variables numéricas.
+
+```{r}
+data_corr <- datos %>%
+    select_if(is.numeric) %>%
+    cor(use = "complete.obs")
+
+data_corr
+```
+
+Esta es una matriz de correlación, la interpretación "estándar" (dependera del análisis y de las fuentes) es que una correlación perfecta tendría que tomar valores de 1 o -1, mientras que valores más cercanos a 0 implican que no existe una correlación. Además, un valor superior a 0.6 indica una fuerte correlación: si tiene signo negativo implica que el aumento de una variable necesariamente reduce la otra; mientras que un signo positivo, indica que el aumento de una variable significa el aumento de la otra. 
+
+Sin embargo, esta no es una manera inmediata de entender la relación entre variables. 
+
+```{r}
+library(corrplot)
+
+corrplot(data_corr,
+    type = "upper", order = "hclust",
+    tl.col = "black", tl.srt = 45
+)
+```
+
+Ahora bien, vamos por partes. Este paquete está diseñado para visualizar matrices de correlaciones, por lo cual es muy útil. Necesita, por lo menos, el parámetro **corr** que es la matriz de correlación. El resto de los parámetros son meramente estéticos: **type = "upper"**  sirve para ver solo la parte superior, **order**  indica como se van a ordenar las correlaciones (jerarquía) y **tl.col** y **tl.srt** sirven para determinar el color y la inclinación de las etiquetas. Los parametros de una función pueden consultarse si en la terminal o en el código escribe un signo de interrogación seguido del nombre de la función sin paréntesis: **?corrplot**. Esto funciona si el paquete está cargado (library).
+
+Algo que podemos observar es que las correlaciones pueden ser interpretadas fácilmente: número de embarazos con número de parto;  semanas de gestación y semanas de embarazo; edad y número de hijos. Todas con una relación positiva, lo que signfica, por ejemplo, que si aumenta la edad aumenta el número de hijos.
+
+Sin embargo, con una correlación negativa está, aunque débil, edad de inicio de vida sexual y el número de embarazos. Lo que se puede interpretar como que personas que inician su vida sexual más tarde tienen un menor número de embarazos.
+
+Para explorar estas relaciones se puede utilizar un diagrama de dispersión (*scatter plot*).
+
+```{r}
+ggplot(datos, aes(y = edad_inicio_vida_sexual, x = numero_embarazos)) +
+    geom_point(aes(col = nivel_edu, size = numero_abortos)) +
+    theme_classic() +
+    theme(legend.position = "bottom")
+```
+
+Con este código podemos visualizar la correlación entre el número de embarazos, eje x, y la edad, eje y, junto con otras dos variables: nivel educativo y número de abortos. 
+
+Y con estas herramientas ahora ustedes pueden realizar sus primeros análisis y empezar a jugar con otras bases de datos. Si bien el análisis puede continuar, este ejemplo pretende mostrar algunas operaciones básicas que se pueden hacer a una base de datos. Además, es necesario tener contexto de los datos, ya que sin un conocimiento previo de los datos limitan que tantos problemas podemos imaginar de un conjunto de datos. 
+
+Si creen que me falto algo, tienen dudas o quejas, no duden en contactarme para ampliar este post.
+

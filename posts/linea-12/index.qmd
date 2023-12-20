@@ -1,0 +1,181 @@
+---
+title: "A un año de la Línea 12 con la API del INFO"
+description: "A un año del trágico accidente de la línea 12 del metro el equipo de Estado Abierto del INFO CDMX elaboró un reporte con información pública. En este post vamos a aprende a usar las API de datos abiertos (de CKAN) y analizar las solicitudes de información pública."
+author: "David Humberto Jiménez S."
+date: "2022-09-13"
+date-modified: "2023-11-30"
+categories: [code, visualization, politics, spanish]
+#image: "sismo.png"
+---
+
+# Solicitudes de ... qué?
+
+El 4 de julio de 2022 se presentó un [informe](https://infocdmx.org.mx/images/biblioteca/2022/Reporte%20Metro%20L12%202022%20V4.pdf) de **Solicitudes de Información Pública** (SIP) sobre la Línea 12 del Metro en la Ciudad de México. En resumen, un tramo de la línea colapso por defectos en la construcción, las personas implicadas de su construcción están en puestos de gobierno y de toma de decisiones. Para sorpresa de nadie, los posibles implicados se están deslindando de responsabilidades y señalamientos.
+
+**Pero**, el informe se realizó con base en las SIP del 3 de mayo del 2021 al 11 de mayo de 2022, es decir: sobre lo que preguntan las personas a las instituciones de la Ciudad de México. Para ver la presentación pueden ver el siguiente [video](https://www.youtube.com/watch?v=isYuKVApYpg) y si quieren pueden leerlo [aquí](https://infocdmx.org.mx/images/biblioteca/2022/Reporte%20Metro%20L12%202022%20V4.pdf).
+
+Y hasta ahí todo sin pena ni gloria: todo es trágico, la gente pide información y a se le deja esperando que alguien le responda. Clásico de una democracia, ¿verdad? Pues así era, hasta que "alguien" se enojó y regaño a dos comisionados del Instituto desde donde se realizó el informe. ¿Y la autonomía a'pá?
+
+Si no me creen, vean este [video](https://youtu.be/JtS3TBjBSLE?t=6672) donde en el pleno los comisionados, *cofcofmachitoscofcof*, continúan con la línea establecida por el gobierno, ofrecen *otros datos* (sello de esta era política): mayor número de solicitudes (porque evidentemente más preguntas significa más transparencia), y que más del **95%** han sido respondidas.
+
+¿Qué significa haber respondido una solicitud de transparencia? Más adelante hay un párrafo sobre algunos hallazgos sobre las respuestas de _esta_ base de datos. Además, si conocen de transparencia saben que una posible respuesta es que esa institución **no** tiene esa información. En aproximadamente la mitad de los casos no sabemos qué respondió el sujeto obligado.
+
+En fin, este no es un rant, este es un blog de datos y eso es lo que haremos. Dado que ya se publicaron las SIP que se utilizaron en el informe, vamos a replicar las gráficas y ver que otra cosa sale.
+
+## Análisis
+
+Entonces, a mi me gusta llamar primero a las *libraries* que vamos a utilizar, luego los datos y empezar a explorar.
+
+```{r, warning=F}
+library(tm)
+library(httr)
+library(tidyr)
+library(dplyr)
+library(plotly)
+library(xtable)
+library(ggplot2)
+library(stringr)
+library(syuzhet)
+library(jsonlite)
+library(tidytext)
+library(lubridate)
+```
+
+Ahora, podemos hacer lo de siempre y descargar los datos, importarlos y limpiarlos. Pero, como el punto de todo esto es aprender a hacer cosas nuevas vamos a leer la API de los datos abiertos del [INFO](https://datosabiertos.infocdmx.org.mx/dataset/linea-12-del-metro/resource/07fff148-a1bf-4fb7-9ed0-ed66b6907890).
+
+![Así debe verse](https://i.postimg.cc/HsqCBdMQ/2022-09-12.png)
+
+Le damos clic en explorar
+
+![Nueva pantalla...](https://i.postimg.cc/N0YFC1X7/2022-09-12-1.png)
+
+Y en el botón verde que dice "API de datos" le damos clic y se verá de la siguiente manera:
+
+![Ta-dá!](https://i.postimg.cc/C15F9JxD/2022-09-12-2.png)
+
+Seleccionamos lo que está subrayado (así como queda en el código de abajo) que es el enlace que necesitamos para "llamar" a los datos. Para revisar por qué hice esto pueden checar el trabajo de [Alan Yeung](https://www.r-bloggers.com/2019/06/getting-open-data-into-r-from-ckan/)
+
+```{r}
+url <- "https://datosabiertos.infocdmx.org.mx/api/3/action/datastore_search?resource_id=07fff148-a1bf-4fb7-9ed0-ed66b6907890"
+raw <- GET(url)
+status_code(raw)
+```
+
+Debe salir 200 para saber que se logró llamar a la información, si sale otra cosa vean el blog ya mencionado. Ambas funciones, *GET* y *status_code*, son del paquete *httr*.
+
+```{r}
+obs <- "&limit=1807"
+url <- paste0(url, obs)
+lista <- fromJSON(url)
+data <- lista$result$records
+```
+
+Por default la consulta tiene un límite de 100 observaciones, por eso a la *url* hay que agregarle el string *&limit=* donde el número es el total de observaciones que hay publicadas. Y del paquete *jsonlite* la función *fromJSON* nos permite obtener los datos (records). Y listo! Con estas instrucciones ya podemos utilizar todas los *datasets* que tiene publicados el INFO.
+
+## Análisis básico
+
+Ya teniendo los datos listos, podemos hacer análisis adicionales a lo que se presenta en el [reporte](https://infocdmx.org.mx/images/biblioteca/2022/Reporte%20Metro%20L12%202022%20V4.pdf) (desde la página 17). Particularmente quiero explorar los textos y alguna cosa que se me vaya ocurriendo.
+
+```{r}
+names(data)
+```
+
+```{r, results="asis"}
+data %>%
+    count(dependencia, sort = T) %>%
+    top_n(10) %>%
+    xtable() %>%
+    print(type = "html")
+```
+
+```{r, results="asis"}
+data %>%
+    count(organo_de_gobierno, sort = T) %>%
+    xtable() %>%
+    print(type = "html")
+```
+
+Es evidente, que el Sistema de Transporte Colectivo (metro) iba a ser el sujeto obligado con más solicitudes de información pública sobre el tema.
+
+```{r}
+# data %>%
+#   count(respuesta)
+```
+
+De las 1,807 solicitudes, hay 281 grupos de respuestas, y si empezamos a revisar vemos que los grupos se pueden reducir... No estaba en el plan, pero estaría interesante para revisar. Dado que se ve gigantesco, chéquenlo con calma en su equipo. Pero, a bote pronto, hay 600 solicitudes sin respuesta (**33%**), 444 (**25%**) se contestaron vía infomex (descanse en paz) o por la Plataforma Nacional de Transparencia (pero no sabemos que se respondió); 188 (**10%**) dijeron que la solicitud le corresponde a otro ente **OJO** este es el texto directo sin adornos abogadiles (nada contra ustedes; sin embargo, nadie entiende como escriben). 79 (**4%**) fueron prevenidas (esto significa que a las personas servidoras públicas no les quedó clara la, o las, preguntas y le piden más información a la persona solicitante) y 51 (**3%**) se declararon incompetentes para responder y 26 (**1%**) se reservaron, esto significa que es información que poseen las instituciones y que por motivos de seguridad no puede ser entregada por un tiempo determinado.
+
+Después de todo ese rollo, falta 26% de las solicitudes... que están en *abogañol* o que no se puede clasificar en un ratito. Si quieren ayuda envíenme un [DM](https://twitter.com/dhumbertoj) Las cifras las fui sacando de medio leer los resultados en una hoja de Excel :P
+
+```{r}
+dias <- data %>%
+    mutate(dia = date(fecha_de_ingreso)) %>%
+    count(dia) %>%
+    ggplot(aes(x = dia, y = n)) +
+    geom_line() +
+    labs(
+        x = "", y = "",
+        title = "Solicitudes por día"
+    ) +
+    theme_classic()
+ggplotly(dias)
+```
+
+El pico de solicitudes está el 5 de junio de 2022. En blogs pasados, específicamente en el análisis de ["Días sin ti"](https://dhumbertojs.github.io/posts/2020-12-09-das-sin-ti-anlisis-de-texto/) utilicé gráficas interactivas, donde podías hacer zoom y te daba información básica de la observación, aquí utilizo la misma técnica.
+
+## Análisis de texto
+
+Algo que no va a ser muy riguroso es el análisis de texto, por qué? Porque las solicitudes de información se caracterizan por ser texto libre y contener, en algunos casos, datos personales. Si bien este dataset tiene testados los datos personales, estos son reemplazados por asteriscos. Aun así, espero encontrar algo interesante.
+
+```{r}
+texto <- data %>%
+    select(descripcion_de_la_solicitud) %>%
+    unnest_tokens(palabra, descripcion_de_la_solicitud) %>%
+    mutate(palabra = str_replace_all(palabra, c("á" = "a", "é" = "e", "í" = "i", "ó" = "o"))) %>%
+    filter(!palabra %in% stopwords("es")) %>%
+    filter(!palabra %in% c("metro", "12", "sistema", "transporte", "colectivo", "ciudad", "mexico", "solicito", "3", "linea", "informacion", "cdmx", "2021"))
+```
+
+Esto ya se la saben, limpieza de textos para tener solo palabras. Ahora, mientras redactaba esto, salieron palabras comunes que son demasiado obvias: metro, 12, línea, sistema, transporte, colectivo, etc. Por eso las filtro antes
+
+```{r}
+texto %>%
+    count(palabra, sort = T) %>%
+    top_n(20)
+```
+
+Ahora, el análisis de sentimiento con Syuzhet, que es unir dos dataframes.
+
+```{r}
+texto_nrc <- get_nrc_sentiment(char_v = texto$palabra, language = "spanish")
+texto_fin <- bind_cols(texto, texto_nrc)
+```
+
+```{r}
+texto_fin %>%
+    pivot_longer(
+        cols = 2:11
+    ) %>%
+    group_by(name) %>%
+    summarise(total = sum(value)) %>%
+    ungroup() %>%
+    mutate(name = reorder(name, total)) %>%
+    ggplot(aes(x = name, y = total, fill = name)) +
+    geom_bar(stat = "identity") +
+    scale_fill_manual(
+        breaks = c("disgust", "surprise", "anger", "joy", "anticipation", "fear", "sadness", "trust", "positive", "negative"),
+        values = c("#24D204", "#06CBBE", "#CB0606", "#FBFE00", "#FF9200", "#46BF5F", "#5479C3", "#01FF4C", "#FF00DC", "#000000")
+    ) +
+    theme_classic() +
+    labs(
+        title = "Análisis de sentimientos",
+        subtitle = "Syuzhet",
+        x = "", y = ""
+    ) +
+    theme(legend.position = "blank")
+```
+
+Resalta que la mayoría de las palabras tienen un sentido negativo... Lo cual tiene cierta lógica, uno no pide información porque ande feliz. Por otro lado, también es sorprendente que no haya tantas palabras relacionadas con el enojo... Si quieren entender que está pasando detrás, vean la documentación de [Syuzhet](https://cran.r-project.org/web/packages/syuzhet/vignettes/syuzhet-vignette.html).
+
+Si a alguien se le ocurre algo más que se pueda hacer, hágamelo saber. Por ahora, creo que esto nos da en qué pensar. Si bien es limitado el número de variables en estas bases de datos, mientras más análisis se realicen con esta información se podrán aprovechar mejor. O bien, nos daremos cuenta de que información hace falta y se podría solicitar que se libere.
+
+Muchas gracias a [Zule](https://twitter.com/zuleeoviedo) por su lectura y recomendaciones para que este texto sea más entendible.
