@@ -4,7 +4,7 @@ description: "Análisis de Solicitudes de Información Pública (SIP) relacionad
 author: "David Humberto Jiménez S."
 date: "2024-02-03"
 categories: [code, text-analysis, visualization, spanish]
-#image: "dias-sin-ti.jpg"
+image: "agua-pasa.png"
 ---
 
 > “Un mago nunca llega tarde, Frodo Bolsón. Ni pronto. Llega exactamente cuando se lo propone.” Gandalf
@@ -713,4 +713,3 @@ Y bueno, con esto podemos imaginar otras posibilidades para realizar análisis m
 Con esto se termina el primer análisis del año. Cada vez trato de incorporar nuevas herrameintas que permitan obtener nuevas ideas sobre que hacer con la información disponible. Si alguna de ustedes tiene alguna sugerencia siempre estoy dispuesto a colaborar. Estoy a un [DM](https://twitter.com/dhumbertoj) de distancia.
 
 Salu2.
-
