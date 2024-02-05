@@ -4,7 +4,7 @@ description: "No quieres copiar y pegar páginas donde están los datos y luego 
 author: "David Humberto Jiménez S."
 date: "2021-11-01"
 date-modified: "2023-11-30"
-categories: [code, visualization, politics, spanish]
+categories: [code, visualization, politics, analysis, mexican elections, spanish]
 #image: "sismo.png"
 ---
 
