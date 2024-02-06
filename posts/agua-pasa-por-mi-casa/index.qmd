@@ -3,7 +3,7 @@ title: "¿Agua pasa por mi casa?"
 description: "Análisis de Solicitudes de Información Pública (SIP) relacionadas al tema de agua potable en la Ciudad de México"
 author: "David Humberto Jiménez S."
 date: "2024-02-03"
-categories: [code, text-analysis, visualization, spanish]
+categories: [code, text-analysis, visualization, spanish, R, Python]
 image: "agua-pasa.png"
 ---
 
@@ -40,6 +40,7 @@ Para este reporte se revisaron las Solicitudes de Información Pública (SIP) re
 Se emplearon las siguientes palabras: “agua” (exacta); que empezará con “Hidri” o “hidrí” (por ejemplo, hídrico); “sequía” o “sequía”; “inundaciones”, “pozos” o “posos”; la combinación de las palabras “captador” y “lluvia” o “pluvial”; así como la combinación de “saneamiento”, “fuga”, “corte” y todas las anteriores. Al tratarse de una selección automatizada, existe la posibilidad de encontrar resoluciones o solicitudes que no pertenezcan a la temática planteada y contengan una o varias de las palabras listadas. 
 
 ```{r}
+#| warning: false
 library(httr)
 library(purrr)
 library(dplyr)
@@ -248,9 +249,6 @@ ver <- ver %>%
     slice(1) %>%
     ungroup() %>%
     select(-16)
-
-levels(as.factor(ver$dependencia))
-nrow(ver)
 # write_xlsx(ver, "SIP_agua.xlsx")
 ```
 
@@ -276,6 +274,7 @@ Los datos de la APi tienen 14 variables:
 Para hacer un análisis más detallado, utilicé un algoritmo de clasificación no supervisada k-means con **6 clusters**. De ahí tomé una muestra de 300 solicitudes, 50 por cada grupo. Con un análisis de palabras frecuentes y lectura de las SIP en la muestra, etiqueté y filtré manualmente (en caso de que hubiera solicitudes que no tuvieran relación con el tema, por ejemplo:solicitudes relacionadas con una calle llamada lluvia), hasta contar con un subconjunto de 273 SIP, mismo que se empleó para ejecutar un algoritmo de clasificación supervisada, en donde esta muestra funcionó como base de datos de entrenamiento, para etiquetar las 40,269 solicitudes. 
 
 ```{python}
+#| warning: false
 import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -307,6 +306,7 @@ data['cluster'] = clusters
 Para este último paso, la clasificación supervisada de textos, es necesario entrenar un modelo de aprendizaje automático con una muestra de datos ya etiquetados, con el objetivo de que el modelo aprenda a clasificar datos nuevos. Se aplicó un preprocesamiento de los textos para convertirlos en vectores numéricos, y se entrenó un modelo de ensamble que combina diferentes clasificadores (SVM, regresión logística y Naive Bayes) utilizando validación cruzada estratificada para encontrar los mejores hiperparámetros a través de GridSearchCV. Una vez que el modelo se entrenó, se usó para predecir las etiquetas de la descripción de las solicitudes. 
 
 ```{python}
+#| warning: false
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.pipeline import Pipeline
@@ -398,19 +398,12 @@ En total se definieron nueve categorías que se listan a continuación:
 Y después de tirar código es moemnto de... tirar más código :D Pero esta vez para poder sacar conclusiones de los datos que ya se han trabajado. Estas gráficas son propuestas que están en el reporte ya mencionado, así como otras que no quedaron por falta de espacio y detalle para explicarlas.
 
 ```{r}
+#| warning: false
 library(tm)
-library(clipr)
-library(dplyr)
-library(tidyr)
-library(readxl)
 library(scales)
 library(viridis)
-library(stringr)
 library(ggplot2)
-library(writexl)
 library(ggrepel)
-library(tidytext)
-library(lubridate)
 library(SnowballC)
 
 ## Conteo ------------------------------------------------------------------
@@ -476,6 +469,7 @@ data <- read_excel("D:/dhumb/Documents/projects/data_blog/agua/ensamble_2.xlsx")
 El código de arriba es solo un preprocesamiento/limpieza de la última base de datos.
 
 ```{r}
+#| warning: false
 data %>%
     group_by(dependencia) %>%
     count(sort = T) %>%
@@ -512,6 +506,7 @@ data %>%
 Era evidente que al tratarse de un tema sobre agua en la Ciudad de México, la institución con mayor número de solicitudes al respecto iba a ser el Sistema de Aguas (SACMEX pa lxs cuates). Sin embargo, también es interesante ver que hay 7 alcaldías (antes delegaciones).
 
 ```{r}
+#| warning: false
 aniomes <- data %>%
     group_by(anio) %>%
     count() %>%
@@ -534,6 +529,7 @@ ggplot(aniomes, aes(x = anio, y = n)) +
 Si vemos el número de solicitudes a lo largo del tiempo, en 2017 se registró el mayor número de solicitudes. En la siguiente gráfica, interactiva, se puede observar la desagregación por mes de cada año. Esto porque creo que hay un efecto de estacionalidad: es decir, si bien un año puede ser particularmente seco, como este 2024, pudo haber meses en los que el desabasto fue mayor. 
 
 ```{r}
+#| warning: false
 xmes <- data %>%
     mutate(mes = month(fecha_de_ingreso)) %>%
     group_by(anio, mes) %>%
@@ -565,6 +561,7 @@ plotly::ggplotly(xmes)
 De las nueve categorías la que tuvo mayor número de solicitudes fue la de "pago de derechos", seguida de "permisos y contratos" y "abastecimiento". Las cifras varían con las del reporte porque se clasificó sin filtrar las solicitudes de la muestra.
 
 ```{r}
+#| warning: false
 ggplot(data, aes(x = forcats::fct_infreq(as.factor(etiqueta)))) +
     geom_bar(aes(fill = organo_de_gobierno)) +
     geom_text(aes(label = comma(after_stat(count))),
@@ -585,6 +582,7 @@ ggplot(data, aes(x = forcats::fct_infreq(as.factor(etiqueta)))) +
 ```
 
 ```{r}
+#| warning: false
 d1 <- data %>%
     mutate(
         estatus = case_when(
@@ -627,6 +625,7 @@ Por esa razón, siguiendo a [Julia Silge & David Robinson](https://www.tidytextm
 De manera resumida, la estadística tf-idf muestra la "importancia" relativa de una palabra en relación a un documento. Esto permite observar palabras "raras", es decir que tienen una menor ocurrencia en general.
 
 ```{r}
+#| warning: false
 texto <- data %>%
     select(organo_de_gobierno, etiqueta, descripcion_solicitud) %>%
     unnest_tokens(palabra, descripcion_solicitud) %>%
@@ -641,6 +640,7 @@ texto <- data %>%
 ```
 
 ```{r}
+#| warning: false
 texto_ambito <- texto %>%
     count(organo_de_gobierno, palabra)
 
@@ -655,6 +655,9 @@ texto_tfidf <- texto_ambito %>%
 ```
 
 ```{r}
+#| warning: false
+#| fig-width: 12
+#| fig-height: 15
 texto_tfidf %>%
     group_by(organo_de_gobierno) %>%
     slice_max(tf_idf, n = 15) %>%
@@ -669,6 +672,7 @@ Si se realiza el análisis por ámbito de los sujetos obligados (alcaldías, pod
 Sin embargo, en el caso del poder judicial las palabras carpetas (asumo que de carpetas de investigación), dolosos, culposos, judicatura y delito son palabras importantes. De manera similar, en el caso del poder legislativo con las palabras legislatura, diputada y aldf (Asamblea Legislativa del Distrito Federal). Lo cual da cuenta de su importancia para realizar análisis.
 
 ```{r}
+#| warning: false
 texto_etiqueta <- texto %>%
     count(etiqueta, palabra)
 
@@ -683,6 +687,9 @@ etiqueta_tfidf <- texto_etiqueta %>%
 ```
 
 ```{r}
+#| warning: false
+#| fig-width: 12
+#| fig-height: 15
 etiqueta_tfidf %>%
     group_by(etiqueta) %>%
     slice_max(tf_idf, n = 15) %>%
