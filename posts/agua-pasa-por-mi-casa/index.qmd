@@ -562,6 +562,8 @@ De las nueve categorías la que tuvo mayor número de solicitudes fue la de "pag
 
 ```{r}
 #| warning: false
+#| #| fig-width: 12
+#| fig-height: 15
 ggplot(data, aes(x = forcats::fct_infreq(as.factor(etiqueta)))) +
     geom_bar(aes(fill = organo_de_gobierno)) +
     geom_text(aes(label = comma(after_stat(count))),
