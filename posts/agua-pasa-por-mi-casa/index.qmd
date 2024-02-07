@@ -306,7 +306,7 @@ data['cluster'] = clusters
 Para este último paso, la clasificación supervisada de textos, es necesario entrenar un modelo de aprendizaje automático con una muestra de datos ya etiquetados, con el objetivo de que el modelo aprenda a clasificar datos nuevos. Se aplicó un preprocesamiento de los textos para convertirlos en vectores numéricos, y se entrenó un modelo de ensamble que combina diferentes clasificadores (SVM, regresión logística y Naive Bayes) utilizando validación cruzada estratificada para encontrar los mejores hiperparámetros a través de GridSearchCV. Una vez que el modelo se entrenó, se usó para predecir las etiquetas de la descripción de las solicitudes. 
 
 ```{python}
-#| warning: false
+# | warning: false
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.pipeline import Pipeline
@@ -376,9 +376,11 @@ df_unlabeled['etiqueta'] = y_pred
 print(classification_report(y_train, grid_search.predict(X_train_vectorized)))
 
 # Une los datos
+df_labeled = df_labeled.rename(columns={'label': 'etiqueta'})
 data = pd.concat([df_unlabeled, df_labeled])
 
-#data.to_excel('D:/dhumb/Documents/projects/data_blog/agua/ensamble_2.xlsx', index=False)
+data.to_excel(
+    'D:/dhumb/Documents/projects/data_blog/agua/ensamble_2.xlsx', index=False)
 ```
 
 En total se definieron nueve categorías que se listan a continuación: 
