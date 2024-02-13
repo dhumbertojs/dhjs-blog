@@ -1,5 +1,5 @@
 ---
-title: "About"
+title: "About me"
 image: profile_me.jpg
 about:
   template: jolla
@@ -15,13 +15,97 @@ about:
       href: https://github.com/dhumbertojs
 
 ---
+<div style='text-align: justify;'>
 
-Welcome!
-
-I'm David, an open data enthusiast from Mexico. With a bachelor's degree in Political Science from [ITAM](https://politica.itam.mx/es/conoce-la-carrera-politica) and experience in public administration, my journey into the world of data analysis and civic tech has been an exciting one.
+# Summary
 
 This blog is more than just a collection of posts – it's my data science portfolio, intended to showcase my projects, skills, and experiences. I believe in making the complex world of data science accessible, and here, I'll be sharing insights, tricks, and real-world applications.
 
-From text analysis to civic tech, I'll delve into projects that have shaped my learning and career. My goal is not just to educate, but to inspire and connect. If you have ideas to explore or challenges you think I can tackle, feel free to send me a DM on Twitter.
+I'm a driven and accomplished professional with a passion for data-driven insights and decision-making. Demonstrated expertise in utilizing advanced data analysis and visualization techniques across diverse roles, resulting in actionable insights and informed strategies. Proven track record of conducting in-depth statistical analysis, evaluating transparency obligations, and pioneering innovative data solutions to optimize operational efficiency. Deeply curious about the intersection of the digital world and its political implications. Proficient in R, Python, and GitHub, dedicated to research, teaching, and lifelong learning. Fluent in both Spanish and English, with a knack for thriving in dynamic, collaborative environments
 
-Let's make data science more engaging and, together, unravel the endless possibilities it holds!
+## EDUCATION
+**International University of La Rioja in Mexico** ([UNIR](https://mexico.unir.net/ingenieria/maestria-big-data/)), Online - Master’s Degree in Big Data Analysis and Visualization
+
+MAY 2022 - SEPTEMBER 2023
+
+**Autonomous Technological Institute of Mexico** ([ITAM](https://politica.itam.mx/es)), Mexico - Bachelor of Arts in Political Science
+AUGUST 2012 - DECEMBER 2018
+
+## PROFESSIONAL EXPERIENCE
+[INFO CDMX](https://infocdmx.org.mx/), México
+
+Head of Open Government Unit
+
+- MAY 2022 - FEB 2024
+  - Conduct statistical analysis of surveys, studies, and reports from the Directorate of Open State, Studies, and Evaluation. 
+  - Monitor Open Data projects.
+
+Project Lead “B”
+
+- FEB 2020 - MAY 2022
+  -  Evaluate transparency obligations of public institutions in Mexico City.
+  -   Offer data solutions and tools to enhance daily operations of the open government direction, studies, and evaluation.
+
+[Cívica Digital](https://www.civica.digital/), México - Data Associate
+
+- MAY 2019 - AUG 2019
+  - Review Open Data sets for the Government of Chile and the Open Data Charter.
+  - Data entry for training the chatbot's Artificial Intelligence.
+
+Undersecretariat of Communications (SCT), México - Technology Advisor
+
+- SEP 2015 - MAY 2019
+  - Monitor the “Mexico Conectado” project for reports and public information requests.
+  - Manage correspondence for the Institutional Liaison Office.
+
+## CONSULTING AND EXTERNAL PROJECTS
+
+National Electoral Institute ([INE](https://www.ine.mx/)) - District 15 Electoral Councilor for the Federal Electoral Process 2023–2024.
+
+- DEC 2023 - JUNE 2024
+
+Cívica Digital - Data Analysis, Visualization, and Calculation of [Care Indicators for the Gender Indicators System](https://indicadoresdegenero.semujeres.cdmx.gob.mx/) of Mexico City. 
+
+- SEP - OCT 2023
+
+Institute of Legal Research ([IIJ](https://www.juridicas.unam.mx/)) - Associate Researcher for the project [Electoral Analysis 2021](https://analisiselectoral2021.juridicas.unam.mx/quienes-somos).
+
+- MAY - DEC 2021
+
+Cívica Digital - Data Analysis and Visualization Consulting for the Institute for Women in Migration, A.C.
+
+- DECEMBER 2020
+
+Autonomous University of Coahuila, Public Security Diploma - Instructor of Governance and Data Management Policies, Module.
+
+- NOVEMBER 2020
+
+[Institute of Leadership Simone de Beauvoir](https://ilsb.org.mx/) - Data Analysis and Visualization Consulting for Policy Classification.
+
+- MAY 2019
+
+Institute of Legal Research (IIJ) - Associate Researcher for the Project [Chronicle of Federal Elections 2018](https://cronicaelectoral.juridicas.unam.mx/pagina/quienes_somos).
+
+  JAN - SEP 2018
+
+  Alonso Lujambio Study Center ([CEAL](http://centrolujambio.itam.mx/)) - 
+
+  - General Coordinator
+    
+    - JAN - DEC 2018
+
+  - Transparency Coordinator
+    
+    - JAN - DEC 2017
+
+## DISTINCTIONS
+
+- Master’s Graduation by Grade Point Average - 2023
+- Finalist team member, Medchain, in Coding4Integrity Hackathon - 2023.
+- Honors mention for B.A. thesis - 2021
+
+## PUBLICATIONS
+
+- B.A. Thesis: Electoral Accountability Through Municipal Public Assets in Mexico: 1994 - 2015 - Advisor: Adrián Lucardi. ITAM. 2021
+- “[Internet, Gobierno y Sociedad en México](https://www.revistabuengobierno.org.mx/wp-content/Documentos/BG22_9.pdf)” - in Buen Gobierno, México, No. 22, Enero-junio 2017.
+</div>
