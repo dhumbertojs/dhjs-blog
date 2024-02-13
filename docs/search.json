@@ -142,9 +142,44 @@
   {
     "objectID": "about.html",
     "href": "about.html",
-    "title": "About",
+    "title": "About me",
     "section": "",
-    "text": "Welcome!\nI’m David, an open data enthusiast from Mexico. With a bachelor’s degree in Political Science from ITAM and experience in public administration, my journey into the world of data analysis and civic tech has been an exciting one.\nThis blog is more than just a collection of posts – it’s my data science portfolio, intended to showcase my projects, skills, and experiences. I believe in making the complex world of data science accessible, and here, I’ll be sharing insights, tricks, and real-world applications.\nFrom text analysis to civic tech, I’ll delve into projects that have shaped my learning and career. My goal is not just to educate, but to inspire and connect. If you have ideas to explore or challenges you think I can tackle, feel free to send me a DM on Twitter.\nLet’s make data science more engaging and, together, unravel the endless possibilities it holds!"
+    "text": "This blog is more than just a collection of posts – it’s my data science portfolio, intended to showcase my projects, skills, and experiences. I believe in making the complex world of data science accessible, and here, I’ll be sharing insights, tricks, and real-world applications.\nI’m a driven and accomplished professional with a passion for data-driven insights and decision-making. Demonstrated expertise in utilizing advanced data analysis and visualization techniques across diverse roles, resulting in actionable insights and informed strategies. Proven track record of conducting in-depth statistical analysis, evaluating transparency obligations, and pioneering innovative data solutions to optimize operational efficiency. Deeply curious about the intersection of the digital world and its political implications. Proficient in R, Python, and GitHub, dedicated to research, teaching, and lifelong learning. Fluent in both Spanish and English, with a knack for thriving in dynamic, collaborative environments\n\n\nInternational University of La Rioja in Mexico (UNIR), Online - Master’s Degree in Big Data Analysis and Visualization\nMAY 2022 - SEPTEMBER 2023\nAutonomous Technological Institute of Mexico (ITAM), Mexico - Bachelor of Arts in Political Science AUGUST 2012 - DECEMBER 2018\n\n\n\nINFO CDMX, México\nHead of Open Government Unit\n\nMAY 2022 - FEB 2024\n\nConduct statistical analysis of surveys, studies, and reports from the Directorate of Open State, Studies, and Evaluation.\nMonitor Open Data projects.\n\n\nProject Lead “B”\n\nFEB 2020 - MAY 2022\n\nEvaluate transparency obligations of public institutions in Mexico City.\nOffer data solutions and tools to enhance daily operations of the open government direction, studies, and evaluation.\n\n\nCívica Digital, México - Data Associate\n\nMAY 2019 - AUG 2019\n\nReview Open Data sets for the Government of Chile and the Open Data Charter.\nData entry for training the chatbot’s Artificial Intelligence.\n\n\nUndersecretariat of Communications (SCT), México - Technology Advisor\n\nSEP 2015 - MAY 2019\n\nMonitor the “Mexico Conectado” project for reports and public information requests.\nManage correspondence for the Institutional Liaison Office.\n\n\n\n\n\nNational Electoral Institute (INE) - District 15 Electoral Councilor for the Federal Electoral Process 2023–2024.\n\nDEC 2023 - JUNE 2024\n\nCívica Digital - Data Analysis, Visualization, and Calculation of Care Indicators for the Gender Indicators System of Mexico City.\n\nSEP - OCT 2023\n\nInstitute of Legal Research (IIJ) - Associate Researcher for the project Electoral Analysis 2021.\n\nMAY - DEC 2021\n\nCívica Digital - Data Analysis and Visualization Consulting for the Institute for Women in Migration, A.C.\n\nDECEMBER 2020\n\nAutonomous University of Coahuila, Public Security Diploma - Instructor of Governance and Data Management Policies, Module.\n\nNOVEMBER 2020\n\nInstitute of Leadership Simone de Beauvoir - Data Analysis and Visualization Consulting for Policy Classification.\n\nMAY 2019\n\nInstitute of Legal Research (IIJ) - Associate Researcher for the Project Chronicle of Federal Elections 2018.\nJAN - SEP 2018\nAlonso Lujambio Study Center (CEAL) -\n\nGeneral Coordinator\n\nJAN - DEC 2018\n\nTransparency Coordinator\n\nJAN - DEC 2017\n\n\n\n\n\n\nMaster’s Graduation by Grade Point Average - 2023\nFinalist team member, Medchain, in Coding4Integrity Hackathon - 2023.\nHonors mention for B.A. thesis - 2021\n\n\n\n\n\nB.A. Thesis: Electoral Accountability Through Municipal Public Assets in Mexico: 1994 - 2015 - Advisor: Adrián Lucardi. ITAM. 2021\n“Internet, Gobierno y Sociedad en México” - in Buen Gobierno, México, No. 22, Enero-junio 2017."
+  },
+  {
+    "objectID": "about.html#education",
+    "href": "about.html#education",
+    "title": "About me",
+    "section": "",
+    "text": "International University of La Rioja in Mexico (UNIR), Online - Master’s Degree in Big Data Analysis and Visualization\nMAY 2022 - SEPTEMBER 2023\nAutonomous Technological Institute of Mexico (ITAM), Mexico - Bachelor of Arts in Political Science AUGUST 2012 - DECEMBER 2018"
+  },
+  {
+    "objectID": "about.html#professional-experience",
+    "href": "about.html#professional-experience",
+    "title": "About me",
+    "section": "",
+    "text": "INFO CDMX, México\nHead of Open Government Unit\n\nMAY 2022 - FEB 2024\n\nConduct statistical analysis of surveys, studies, and reports from the Directorate of Open State, Studies, and Evaluation.\nMonitor Open Data projects.\n\n\nProject Lead “B”\n\nFEB 2020 - MAY 2022\n\nEvaluate transparency obligations of public institutions in Mexico City.\nOffer data solutions and tools to enhance daily operations of the open government direction, studies, and evaluation.\n\n\nCívica Digital, México - Data Associate\n\nMAY 2019 - AUG 2019\n\nReview Open Data sets for the Government of Chile and the Open Data Charter.\nData entry for training the chatbot’s Artificial Intelligence.\n\n\nUndersecretariat of Communications (SCT), México - Technology Advisor\n\nSEP 2015 - MAY 2019\n\nMonitor the “Mexico Conectado” project for reports and public information requests.\nManage correspondence for the Institutional Liaison Office."
+  },
+  {
+    "objectID": "about.html#consulting-and-external-projects",
+    "href": "about.html#consulting-and-external-projects",
+    "title": "About me",
+    "section": "",
+    "text": "National Electoral Institute (INE) - District 15 Electoral Councilor for the Federal Electoral Process 2023–2024.\n\nDEC 2023 - JUNE 2024\n\nCívica Digital - Data Analysis, Visualization, and Calculation of Care Indicators for the Gender Indicators System of Mexico City.\n\nSEP - OCT 2023\n\nInstitute of Legal Research (IIJ) - Associate Researcher for the project Electoral Analysis 2021.\n\nMAY - DEC 2021\n\nCívica Digital - Data Analysis and Visualization Consulting for the Institute for Women in Migration, A.C.\n\nDECEMBER 2020\n\nAutonomous University of Coahuila, Public Security Diploma - Instructor of Governance and Data Management Policies, Module.\n\nNOVEMBER 2020\n\nInstitute of Leadership Simone de Beauvoir - Data Analysis and Visualization Consulting for Policy Classification.\n\nMAY 2019\n\nInstitute of Legal Research (IIJ) - Associate Researcher for the Project Chronicle of Federal Elections 2018.\nJAN - SEP 2018\nAlonso Lujambio Study Center (CEAL) -\n\nGeneral Coordinator\n\nJAN - DEC 2018\n\nTransparency Coordinator\n\nJAN - DEC 2017"
+  },
+  {
+    "objectID": "about.html#distinctions",
+    "href": "about.html#distinctions",
+    "title": "About me",
+    "section": "",
+    "text": "Master’s Graduation by Grade Point Average - 2023\nFinalist team member, Medchain, in Coding4Integrity Hackathon - 2023.\nHonors mention for B.A. thesis - 2021"
+  },
+  {
+    "objectID": "about.html#publications",
+    "href": "about.html#publications",
+    "title": "About me",
+    "section": "",
+    "text": "B.A. Thesis: Electoral Accountability Through Municipal Public Assets in Mexico: 1994 - 2015 - Advisor: Adrián Lucardi. ITAM. 2021\n“Internet, Gobierno y Sociedad en México” - in Buen Gobierno, México, No. 22, Enero-junio 2017."
   },
   {
     "objectID": "index.html",
