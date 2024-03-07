@@ -1,0 +1,235 @@
+---
+title: "Mini intro a Chainy (_Shiny_)"
+description: "Ejemplo de visualizacion interactiva sobre solicitudes de informacion"
+author: "David Humberto Jiménez S."
+date: "2024-03-03"
+categories: [spanish, interactive, shiny]
+image: "shiny.jpg"
+---
+
+# Bienvenides!
+
+A ustedes no les pasa que sienten que pueden hacer algo mejor, ¿pero no saben exactamente qué falta? A mí me pasa seguido, pero afortunadamente el internet tiene cosas preciosas que te invitan a intentarlo. Y luego de ver todas las cosas bonitas que se pueden hacer en [Shiny](https://shiny.posit.co/r/getstarted/shiny-basics/lesson1/index.html) decidí seguir este [tutorial](https://laderast.github.io/gradual_shiny/), el [_cheatsheet_](https://raw.githubusercontent.com/rstudio/cheatsheets/main/shiny.pdf) y las recomendaciones de [_R ladies_](https://flor14.github.io/rladies_shiny_meetup_2020/rladies_shiny_2020#30)
+
+Ahora, para no perder la bonita costumbre de trabajar con datos de solicitudes, también he estado leyendo sobre los modelos de _word embedding_ para Procesamiento de Lenguaje Natural (PLN) word2vec y doc2vec. En resumen, estos modelos de _machine learning_ lo que hacen es encontrar palabras por contextos similares (palabras adyacentes). Por ejemplo, nuestros teclados en los celulares de autocorrector, o cuando buscas algo en Google y completa el texto. Me he inspirado de diversos trabajos en español: como este [análisis de rap](https://www.kaggle.com/code/smunoz3801/word2vec-aprende-la-sem-ntica-del-rap-espa-ol), un ejercicio para [detectar noticias falsas](https://www.kaggle.com/code/haibaral/spanish-word2vec/notebook) y un artículo sobre un [centro de emergencias](http://www.rte.espol.edu.ec/index.php/tecnologica/article/view/844/540) de la Universidad del Azuay, Ecuador.
+
+Entonces, en esta entrada haré lo siguiente: de un conjunto de datos de solicitudes de información pública realizaré un clasificador temático con doc2vec, y los resultados serán presentados en una _web app_ interactiva para que la exploren por ustedes mismas, para que no vean solo lo que les presento.
+
+Las SIP utilizadas corresponden a las dieciséis alcaldías de la Ciudad de México, mi fuente de información es el Instituto Nacional de Transparencia, Acceso a la Información y Proteccion de Datos Personales ([INAI](https://www.plataformadetransparencia.org.mx/web/guest/datos_abiertos)) 
+
+## Datos 
+
+Cuando buscas y descargas los “datos abiertos” de la Plataforma Nacional de Transparencia (PNT), te devuelve un archivo de tipo zip en tu correo. Desde que empiezas la búsqueda hasta recibir el correo pasan entre 15 y 20 minutos. 
+
+Para conservar los datos de la manera en que se cargaron a la PNT, voy a reutilizar los csv de este proyecto pero que estoy haciendo en python. Posteriormente, voy a unir todos los archivos en una sola base de datos para utilizar _tidyverse_ para limpiar los datos. 
+
+```{r}
+library(dplyr)
+library(purrr)
+library(readr)
+library(shiny)
+library(udpipe)
+library(stringr)
+library(ggplot2)
+library(doc2vec)
+library(word2vec)
+library(lubridate)
+
+```
+
+Como siempre, a mí me gusta ‘llamar’ las librerías con las que voy a trabajar en el primer código. Luego ‘leo’ todos los csv. En esta ocasión utilicé el paquete [reader](https://cran.r-project.org/web/packages/reader/index.html) en lugar de la función **base** de R _read.csv_ porque me salían mensajes de error por el encoding.
+
+```{r}
+directory <- "C:/Users/dhumb/Documents/projects/sip-alcaldias-nlp/data/SIP"  
+files <- list.files(directory)
+
+data <- map(files,
+            ~ read_csv(paste(directory, .x, sep = "/"), 
+                       locale = locale(encoding = "latin1"),
+                       show_col_types = FALSE) %>% 
+                         as_tibble() %>% 
+                         mutate_all(as.character)) %>% 
+  bind_rows() 
+
+summary(data)
+```
+
+Posteriormente, hice una breve limpieza de datos. Había hecho una para reemplazar nombres de alcaldías, pero coinciden con aquellas solicitudes sobre datos personales.
+
+```{r}
+data <- data %>% 
+  filter(TIPOSOLICITUD == 'Información pública') %>% #Porque solo nos interesan las SIP, y habia 16 de datos personales
+  mutate(
+    FECHASOLICITUD = dmy(FECHASOLICITUD),
+    FECHALIMITE = dmy(FECHALIMITE),
+    FECHARESPUESTA = dmy(FECHARESPUESTA),
+    FECHASOLICITUDTERMINO = dmy(FECHASOLICITUDTERMINO),
+    DEPENDENCIA = str_remove_all(DEPENDENCIA, "Alcaldía"),
+    DEPENDENCIA = str_trim(DEPENDENCIA, 'both'),
+    FOLIO = str_remove_all(FOLIO, "[:punct:]"),
+    FOLIO = str_remove_all(FOLIO, "=")
+  )
+
+summary(data)
+```
+
+Como pueden observar, hay un total de 208,436 solicitudes para el periodo 2019-2024 en las 16 alcaldías de la CDMX. Luego, doc2vec tiene la restricción de que los textos no deben superar las mil palabras. Por eso cree la variable y aplique un filtro. Para terminar trabajando con 206,566 solicitudes. 
+
+```{r}
+data <- data %>% 
+  mutate(
+    txt_clean_word2vec(DESCRIPCIONSOLICITUD),
+    nword = txt_count_words(DESCRIPCIONSOLICITUD)
+  ) %>% 
+  filter(nword > 0 & nword <= 1000)
+summary(data)
+```
+
+## Word2vec
+
+Y ahora es momento de utilizar doc2vec. Para entenderlo, es necesario explicar que este es una extensión de la arquitectura de _machine learning_ word2vec. Esta detecta el contexto de las palabras de acuerdo a sus palabras vecinas. Hay dos modelos: _Continous Bag of Words_ (CBOW) que predice la palabra objetivo de acuerdo con las palabras de alrededor, y se recomienda para datos pequeños. Y el otro, _Continous Skip-Gram Model_ que funciona al revés: a partir de una palabra objetivo, predice las palabras de contexto. Este se recomienda para conjuntos de datos más grandes. 
+
+Ahora bien, doc2vec, como una extensión, permite al modelo “entender” frases, párrafos o documentos. Si leen el artículo [sobre emergencias en Ecuador](http://www.rte.espol.edu.ec/index.php/tecnologica/article/view/844/540) vienen varios artículos discutiendo las ventajas de uno sobre otro para determinados conjuntos de datos. Así que por facilidad, y porque además es solo el primer paso, se entrenará un modelo doc2vec. Para esto, utilizo los mismos parámetros del blog de [bnosac.be](http://www.bnosac.be/index.php/blog/103-doc2vec-in-R).
+
+```{r}
+sip <- data %>% 
+  select(FOLIO, DESCRIPCIONSOLICITUD) %>% 
+  rename(
+    doc_id = FOLIO,
+    text = DESCRIPCIONSOLICITUD)
+
+model <- paragraph2vec(x=sip, type='PV-DBOW',
+                       dim = 150, iter = 10, min_count = 3, 
+                       lr = 0.05, threads = 2)
+```
+
+Y ya, con eso se genera el modelo. Sencillo, ¿no? Ahora, aún no descubro por qué, pero el modelo tiene menos renglones que los datos. Y justo por esta razón, mi idea original de utilizar un clasificador automático se fue al traste, pero no importa. Porque aún se puede hacer algo interesante con _chainy_.
+
+## Shiny
+
+[Shiny](https://shiny.posit.co/r/gallery/) es un entorno de trabajo basado en web para visualizaciones interactivas. En otras palabras, es una herramienta para que otras personas puedan interactuar con los análisis, gráficas, tablas y demás cosas que hagamos en R y Python. Y esto nos permite, entre muchas cosas, que las personas que no necesitan saber de datos puedan interactuar y ver lo que nosotras consideramos importante.
+
+Antes de entrar de lleno a _chainy_ es necesario entender que se puede hacer todo lo que ya sabemos hacer en R habitualmente. Con la diferencia de que hay que adaptarlo para que sea interactivo, es decir, que otra persona pueda ajustar cualquier valor, variable o parámetro sin necesidad de tocar el código. Por eso, uno de los posibles usos para el modelo que **doc2vec** que se entrenó antes, es encontrar documentos que tengan similitud con nuevas palabras. Como pueden ver en el siguiente ejemplo:
+
+```{r}
+similar <- predict(model, 
+                   newdata = c("agua"), 
+                   type = 'nearest', which = 'word2doc', top_n = 5)
+similar
+```
+
+Y no es perfecto, pero sí nos muestra solicitudes que contengan la palabra, o palabras, que estemos buscando. 
+
+```{r}
+data %>% 
+  filter(FOLIO=="0424000219720") %>% 
+  select(DESCRIPCIONSOLICITUD)
+  ```
+
+Shiny necesita dos secciones para funcionar: la UI (_User Interface_ o interfaz de usuario) que es lo que la persona va a ver: una gráfica, una tabla, un botón, sombra aquí, sombra allá, etc. Y el _Server_ que es donde van las funciones o la “lógica” de lo que queremos que haga nuestra aplicación de chainy. 
+  
+```{r}
+ui <- fluidPage(
+  titlePanel("Buscador de SIP por palabra"),
+  sidebarLayout(
+    sidebarPanel(
+      textInput("newdata", "Escribe una palabra:", value = ""),
+      numericInput("top_n", "Máximo de solicitudes similares:", value = 5, min = 1),
+      actionButton("submit", "Puchale aquí")
+    ),
+    mainPanel(
+      tableOutput("similar_docs")
+    )
+  )
+)
+```
+
+En este código podemos observar lo siguiente: 
+
+- **La funcion fluidpage()** sin la cual nada funciona, es como en ggplot.
+
+    - titlePanel, que nos permite poner un título al chainy.
+
+    - **sidebarLayout** que va a configurar lo que aparece a un ladito, en este caso, los parámetros que puede cambiar la persona
+
+        - textInput (la palabra)
+
+        - numericInput (el máximo de solicitudes que puede aparecer, como vimos en el ejemplo aparecen otros términos que no son el folio y así no nos sirve)
+
+        - actionButton (el botón que va a activar nuestra app)
+
+    - mainPanel en donde se va a mostrar lo que queremos, en este caso la tabla con las solicitudes.
+
+En general, esta parte me parece que es autoexplicativa y tiene lógica sobre lo que queremos que la persona vea. Además, los nombres en inglés ‘newdata’, ‘top_n’ y ‘submit’ están relacionados con la parte del **server** porque de nada sirve que lo que se ve este muy bonito si no hace lo que queremos.
+
+```{r}
+server <- function(input, output) {
+  
+  observeEvent(input$submit, {
+    req(input$newdata)
+    
+    similar <- predict(model, 
+                       newdata = input$newdata, 
+                       type = "nearest", 
+                       which = "word2doc", 
+                       top_n = input$top_n)
+    
+    similar <- similar[[1]]  #como es una lista, solo queremos el contenido
+    
+    similar_folio <- data %>%
+      filter(FOLIO %in% similar$term2) %>%
+      select(FOLIO, DESCRIPCIONSOLICITUD)
+    
+    output$similar_docs <- renderTable({
+      similar_folio
+    })
+  })
+}
+```
+
+En este caso, todo funciona como cuando se define una función. Ya sé que yo no soy muy fan de las funciones porque #Tidyverse, pero la idea es que todo vaya dentro de las llaves **{ }** paso a pasito. En este caso, todo empieza cuando la persona presiona el botón. 
+
+```{r}
+server <- function(input, output) {
+  
+  observeEvent(input$submit, {
+    req(input$newdata)
+    
+    similar <- predict(model, 
+                       newdata = input$newdata, 
+                       type = "nearest", 
+                       which = "word2doc", 
+                       top_n = input$top_n)
+    
+    similar <- similar[[1]]  #como es una lista, solo queremos el contenido
+    
+    similar_folio <- data %>%
+      filter(FOLIO %in% similar$term2) %>%
+      select(FOLIO, DESCRIPCIONSOLICITUD, FECHASOLICITUD)
+    
+    output$similar_docs <- renderTable({
+      similar_folio
+    })
+  })
+}
+```
+
+Y por último podemos ver que de verdad nuestra app funcione. Pero antes, un disclaimer: esta shiny app es muuuuy sencilla, en este caso solo admite buscar una palabra y no hay mucho de interesante. Hay muchos ejemplos en internet, especialmente en la [galería de shiny](https://shiny.posit.co/r/gallery/) y no quise hacer un refrito de lo mismo. Por eso preferí frustrarme un rato con doc2vec. 
+
+## It’s alive!!
+
+```{r}
+shinyApp(ui = ui, server = server)
+```
+
+Entonces, para finalizar esta entrada, un shiny app necesita **3 elementos** (que no son flores, azúcar y muchos colores):
+
+- Una UI
+
+- Un server (o lógica, o lo que queramos mostrar)
+
+- La función shinyApp(ui = ui, server = server)
+
+Por último, dado que esto es un markdown (o un documento plano) no hay chance de que se vea la app de chainy. Entonces, trate de montarla en shinyapps.io Y es más difícil de lo que imagine. Así que, algunas consideraciones: el csv final (solo con folio, descripción y fecha) pesa 122 mb, así que lo convertí en un dataframe de R (rds) y pesa 22 mb. El modelo fue ajustado, porque como estaba originalmente era casi de 500 mb. Así que en la app final tiene 50 dimensiones y fue entrenado en 6 “hilos” en paralelo. Para revisar la app [puchale aquí](https://dhjsanchez.shinyapps.io/test/).
+
+Como siempre, mis DM están abiertos en [@dhumbertojs](https://twitter.com/dhumbertoj) y espero que pronto pueda poner comentarios en el blog. Si tienen alguna recomendación o sugerencia, siempre es bienvenida. 

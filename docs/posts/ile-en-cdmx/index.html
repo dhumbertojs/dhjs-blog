@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.551">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -25,7 +25,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -82,7 +82,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -91,21 +97,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
 }</script>
-
 <script src="../../site_libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+
 <link href="../../site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+
 <script src="../../site_libs/datatables-binding-0.30/datatables.js"></script>
+
 <script src="../../site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+
 <link href="../../site_libs/dt-core-1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
+
 <link href="../../site_libs/dt-core-1.13.4/css/jquery.dataTables.extra.css" rel="stylesheet">
+
 <script src="../../site_libs/dt-core-1.13.4/js/jquery.dataTables.min.js"></script>
+
 <link href="../../site_libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet">
+
 <script src="../../site_libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+
 
 
 <link rel="stylesheet" href="../../styles.css">
@@ -114,10 +129,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">blog</span>
     </a>
@@ -129,23 +144,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../../about.html" rel="" target="">
- <span class="menu-text">About me</span></a>
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About me</span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/dhumbertojs" rel="" target=""><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/dhumbertojs"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com/dhumbertoj" rel="" target=""><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com/dhumbertoj"> <i class="bi bi-twitter" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -205,6 +220,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
+
 <p>Este post es una actualización y revisión de un post de la primera iteración de este blog.</p>
 <section id="datos-sobre-ile-en-la-ciudad-de-méxico" class="level2">
 <h2 class="anchored" data-anchor-id="datos-sobre-ile-en-la-ciudad-de-méxico">Datos sobre ILE en la Ciudad de México</h2>
@@ -253,7 +269,6 @@ Attaching package: 'dplyr'</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">datatable</span>(<span class="fu">head</span>(datos), <span class="at">rownames =</span> F, <span class="at">class =</span> <span class="st">"display"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-
 <div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-0a80ea38801066ed83d2" style="width:100%;height:auto;"></div>
 <script type="application/json" data-for="htmlwidget-0a80ea38801066ed83d2">{"x":{"filter":"none","vertical":false,"data":[["2016","2016","2016","2016","2016","2016"],["Abril","Abril","Abril","Abril","Abril","Abril"],["2016-04-01","2016-04-01","2016-04-01","2016-04-01","2016-04-01","2016-04-01"],[null,null,null,null,null,null],["Soltera","Soltera","Casada","Soltera","Soltera","Soltera"],["24","30","38","23","18","18"],["Ninguno","Ninguno","Ninguno","Ninguno","Ninguno","Ninguno"],["Preparatoria","Secundaria","Sin acceso a la educacion formal","Preparatoria","Secundaria","Secundaria"],["Estudiante","Trabajadora del hogar no remunerada","Trabajadora del hogar no remunerada","Empleada","Estudiante","Empleada"],["Ninguna","Católica","Católica","Ninguna","Ninguna","Ninguna"],[null,null,null,null,null,null],["Ciudad de México","Estado de México","Estado de México","Estado de México","Estado de México","Estado de México"],["Azcapotzalco","Fuera de CDMX","Fuera de CDMX",null,null,null],["CDMX","Ecatepec de Morelos","Ecatepec de Morelos",null,null,null],["12","12","13","10","13","14"],["13","17","15","15","15","16"],["27/01/2016","08/01/2016","15/02/2016","20/02/2016","18/02/2016","01/02/2016"],["1","3","7","2","1","2"],["8","9","4","4","4","7"],["0","0","0","0","0","0"],["0","1","5","0","0","1"],["0","0","0","0","0","0"],["0","1","1","1","0","0"],[null,null,null,null,null,null],["Si","Si","Si","Si","Si","Si"],["Ninguno","Ninguno","Ninguno","Ninguno","Ninguno","Ninguno"],["01/04/2016","01/04/2016","01/04/2016","01/04/2016","01/04/2016","01/04/2016"],["1","1","1","1","1","1"],["Interrupción voluntaria","Interrupción voluntaria","Interrupción voluntaria","Interrupción voluntaria","Interrupción voluntaria","Interrupción voluntaria"],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],["3","6","2","1","0","5"],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],[null,null,null,null,null,null],["Condón","Condón","Condón","Condón","Ninguno","Condón"],["08/04/2016","08/04/2016","08/04/2016","08/04/2016","15/04/2016","08/04/2016"],["Completa","Completa","Completa","Completa","Otro","Completa"],["Medicamento","Medicamento","Medicamento","Medicamento","Medicamento","Medicamento"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>anio<\/th>\n      <th>mes<\/th>\n      <th>fecha_ingreso<\/th>\n      <th>referida<\/th>\n      <th>estado_civil<\/th>\n      <th>edad<\/th>\n      <th>institucion_derechohab<\/th>\n      <th>nivel_edu<\/th>\n      <th>ocupacion<\/th>\n      <th>religion<\/th>\n      <th>parentesco<\/th>\n      <th>entidad<\/th>\n      <th>alcaldia<\/th>\n      <th>municipio<\/th>\n      <th>edad_primera_menstruacion<\/th>\n      <th>edad_inicio_vida_sexual<\/th>\n      <th>fecha_ultima_menstruacion<\/th>\n      <th>semanas_embarazo<\/th>\n      <th>numero_hijos<\/th>\n      <th>numero_embarazos<\/th>\n      <th>numero_abortos<\/th>\n      <th>numero_partos<\/th>\n      <th>numero_cesareas<\/th>\n      <th>numero_iles<\/th>\n      <th>recibio_consejeria<\/th>\n      <th>uso_anticonceptivo<\/th>\n      <th>fecha_primera_valoracion<\/th>\n      <th>numero_consultas<\/th>\n      <th>motivos_interrupcion<\/th>\n      <th>fecha_ingreso_hosp<\/th>\n      <th>fecha_egreso_hosp<\/th>\n      <th>desc_servicio<\/th>\n      <th>semanas_gestacion_usg<\/th>\n      <th>dias_gestacion_usg<\/th>\n      <th>firma_consentimiento<\/th>\n      <th>se_complica<\/th>\n      <th>con_dolor<\/th>\n      <th>analgesico<\/th>\n      <th>anticonceptivo_post<\/th>\n      <th>fecha_cierre<\/th>\n      <th>resultado_ile<\/th>\n      <th>procedimiento_ile<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
@@ -353,7 +368,6 @@ Attaching package: 'janitor'</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">datatable</span>(tabla, <span class="at">rownames =</span> F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-
 <div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-9f6bb8739cabc30ed908" style="width:100%;height:auto;"></div>
 <script type="application/json" data-for="htmlwidget-9f6bb8739cabc30ed908">{"x":{"filter":"none","vertical":false,"data":[["2015","2016","2016","2016","2016","2016","2016","2016","2016","2016","2016","2016","2016","2017","2017","2017","2017","2017","2017","2017","2017","2017","2017","2017","2017","2018","2018","2018","2018","2018","2018","2018","2018","2018","2018","2018","2018","2019","2019","2019","2019","2019","2019","2019","2019","2019","2019","2019","2019","2020","2020","2020","2020","2020","2020","2020","2020","2020","2020","2020","2020","2021","2021","2021","2021","2021","2021","2021","2021","2021","2021","2021","2021"],["Noviembre","Abril","Agosto","Diciembre","Enero","Febrero","Julio","Junio","Marzo","Mayo","Noviembre","Octubre","Septiembre","Abril","Agosto","Diciembre","Enero","Febrero","Julio","Junio","Marzo","Mayo","Noviembre","Octubre","Septiembre","Abril","Agosto","Diciembre","Enero","Febrero","Julio","Junio","Marzo","Mayo","Noviembre","Octubre","Septiembre","Abril","Agosto","Diciembre","Enero","Febrero","Julio","Junio","Marzo","Mayo","Noviembre","Octubre","Septiembre","Abril","Agosto","Diciembre","Enero","Febrero","Julio","Junio","Marzo","Mayo","Noviembre","Octubre","Septiembre","Abril","Agosto","Diciembre","Enero","Febrero","Julio","Junio","Marzo","Mayo","Noviembre","Octubre","Septiembre"],[2,3316,3132,2302,2782,2938,3048,3316,2900,3048,3112,3156,3026,2384,3186,2542,3518,2928,2790,2980,3352,3112,2722,3248,2432,2852,2648,1788,3284,2852,2366,2614,3038,2894,1948,2656,2496,1219,1334,941,1419,1271,1210,1218,1285,1480,1232,1330,1190,883,786,803,1462,1373,782,663,1358,636,814,888,819,1066,1158,1010,785,797,1021,1154,1063,960,1124,1157,997]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>anio<\/th>\n      <th>mes<\/th>\n      <th>total<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
@@ -404,7 +418,11 @@ Attaching package: 'janitor'</code></pre>
 <pre><code>Warning: Removed 1 row containing missing values (`geom_line()`).</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Esta gráfica muestra el porcentaje por mes y por año. En esta gráfica utilizo lineas para mostrar la distribución de interrupciones por mes para los años disponibles. Esto a través del <strong>geom_line</strong> en donde cada año tiene un color distinto.</p>
@@ -459,7 +477,11 @@ Attaching package: 'janitor'</code></pre>
 <span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">"bottom"</span></span>
 <span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>En este caso, agregamos nuevos argumentos en <strong>theme</strong>. <em>axis.text.x</em> es para modificar como vemos las eetiquetas del eje de las x (el eje horizontal). En este caso, lo giré 45° y lo ajusté para que no se sobreponga.</p>
@@ -474,7 +496,11 @@ Attaching package: 'janitor'</code></pre>
 <span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">10</span>, <span class="dv">60</span>, <span class="at">by =</span> <span class="dv">2</span>)) <span class="sc">+</span></span>
 <span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_flip</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Un diagrama de caja y brazos (<em>boxplot</em>) nos muestra de manera gráfica los cuartiles de una variable. Es decir, los extremos de la caja representan el primer y tercer cuartil. Y la barra dentro de la caja representa el promedio. Mientras que los puntos representan <em>outliers</em> o valores atípicos.</p>
@@ -492,7 +518,11 @@ Attaching package: 'janitor'</code></pre>
 <span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
 <span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_grid</span>(anio <span class="sc">~</span> .)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>La función <strong>facet_grid</strong> puede ser utilizado de manera fija (vertical u horizontal) o ajustarlo dentro de un rectángulo con <em>facet_wrap</em>. Los argumentos son los mismos en ambos casos: (variable1 ~ variable2). Con esto quiero decir que puede separar las gráficas por otras variables. En este caso, vemos los diagramas de caja y brazos por año. Pero así se ve muy feo, probemos otra configuración de los <em>facet</em></p>
@@ -508,7 +538,11 @@ Attaching package: 'janitor'</code></pre>
 <span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
 <span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_grid</span>(<span class="at">cols =</span> <span class="fu">vars</span>(<span class="fu">as.numeric</span>(anio)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Aquí le especificamos a <strong>R</strong> que ponga un número de columnas igual al de nuestra variable de interés (como no la podemos “pasar” directamente utilizamos <em>vars</em> de dplyr).</p>
@@ -525,7 +559,11 @@ Attaching package: 'janitor'</code></pre>
 <pre><code>Warning: Removed 18398 rows containing non-finite values (`stat_boxplot()`).</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>De manera similar, podemos observar el número de hijes por nivel educativo de las pacientes. Hay muchísimos valores atípicos.</p>
@@ -805,7 +843,11 @@ semanas_gestacion_usg        -0.0593008633           1.000000000</code></pre>
 <span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">tl.col =</span> <span class="st">"black"</span>, <span class="at">tl.srt =</span> <span class="dv">45</span></span>
 <span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Ahora bien, vamos por partes. Este paquete está diseñado para visualizar matrices de correlaciones, por lo cual es muy útil. Necesita, por lo menos, el parámetro <strong>corr</strong> que es la matriz de correlación. El resto de los parámetros son meramente estéticos: <strong>type = “upper”</strong> sirve para ver solo la parte superior, <strong>order</strong> indica como se van a ordenar las correlaciones (jerarquía) y <strong>tl.col</strong> y <strong>tl.srt</strong> sirven para determinar el color y la inclinación de las etiquetas. Los parametros de una función pueden consultarse si en la terminal o en el código escribe un signo de interrogación seguido del nombre de la función sin paréntesis: <strong>?corrplot</strong>. Esto funciona si el paquete está cargado (library).</p>
@@ -821,7 +863,11 @@ semanas_gestacion_usg        -0.0593008633           1.000000000</code></pre>
 <pre><code>Warning: Removed 9136 rows containing missing values (`geom_point()`).</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Con este código podemos visualizar la correlación entre el número de embarazos, eje x, y la edad, eje y, junto con otras dos variables: nivel educativo y número de abortos.</p>
@@ -911,10 +957,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -924,8 +987,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -937,7 +1009,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -981,6 +1176,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1006,6 +1202,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1066,6 +1288,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 
