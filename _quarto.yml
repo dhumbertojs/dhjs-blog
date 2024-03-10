@@ -3,7 +3,9 @@ project:
   output-dir: docs
 
 website:
-  title: "blog"
+  title: "Aprende-R en español"
+  site-url: dhumbertojs.github.io
+  description: "Blog de trucos, curiosidades y mini tutoriales que he aprendido en mi experiencia para hacer del análisis de datos algo claro, sencillo y en español."
   navbar:
     right:
       - about.qmd
