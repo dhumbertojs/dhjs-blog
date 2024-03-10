@@ -13,6 +13,8 @@ website:
         href: https://github.com/dhumbertojs
       - icon: twitter
         href: https://twitter.com/dhumbertoj
+      - icon: journal-code
+        href: https://www.r-bloggers.com/
 format:
   html:
     theme: darkly
