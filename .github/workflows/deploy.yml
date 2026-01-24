@@ -27,7 +27,9 @@ jobs:
             libxml2-dev \
             libjpeg-dev \
             libpoppler-cpp-dev \
-            libfontconfig1-dev
+            libfontconfig1-dev \
+            libharfbuzz-dev \
+            libfribidi-dev
 
       - name: Setup renv
         uses: r-lib/actions/setup-renv@v2
