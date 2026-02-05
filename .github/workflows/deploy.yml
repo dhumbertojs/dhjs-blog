@@ -2,38 +2,40 @@ name: Deploy Quarto Blog
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Set up R
+      - name: Setup R
         uses: r-lib/actions/setup-r@v2
 
-      - name: Install renv
-        run: R -e 'install.packages("renv")'
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rsync
 
       - name: Restore R packages
-        run: R -e 'renv::restore()'
+        uses: r-lib/actions/setup-renv@v2
 
       - name: Install Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Render site
+      - name: Render blog
         run: quarto render
 
-      - name: Deploy via rsync
-        uses: appleboy/rsync-action@v0.1.0
+      - name: Deploy to server via SCP
+        uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "_site/"
-          target: ${{ secrets.DEPLOY_PATH }}
-          args: "-avz --delete"
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: "_site/*"
+          target: "/srv/blog_dhjs"
+          strip_components: 1
