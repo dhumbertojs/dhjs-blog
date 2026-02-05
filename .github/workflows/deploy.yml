@@ -1,54 +1,39 @@
-name: Build & Deploy Quarto Blog
+name: Deploy Quarto Blog
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-
-    env:
-      RENV_PATHS_ROOT: ~/.local/share/renv
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup R
+      - name: Set up R
         uses: r-lib/actions/setup-r@v2
 
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libcurl4-openssl-dev \
-            libssl-dev \
-            libxml2-dev \
-            libjpeg-dev \
-            libpoppler-cpp-dev \
-            libfontconfig1-dev \
-            libharfbuzz-dev \
-            libfribidi-dev \
-            libfreetype6-dev \
-            libpng-dev \
-            libtiff5-dev \
-            libjpeg-dev
+      - name: Install renv
+        run: R -e 'install.packages("renv")'
 
-      - name: Setup renv
-        uses: r-lib/actions/setup-renv@v2
+      - name: Restore R packages
+        run: R -e 'renv::restore()'
 
-      - name: Setup Quarto
+      - name: Install Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
       - name: Render site
         run: quarto render
 
-      - name: Deploy to home lab
-        uses: appleboy/scp-action@v0.1.7
+      - name: Deploy via rsync
+        uses: appleboy/rsync-action@v0.1.0
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.DEPLOY_KEY }}
-          source: "_site/*"
-          target: "/srv/blogs/dhumbertojs"
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "_site/"
+          target: ${{ secrets.DEPLOY_PATH }}
+          args: "-avz --delete"
