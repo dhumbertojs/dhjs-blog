@@ -1,0 +1,51 @@
+---
+title: "Nueva época"
+description: "Después de un año sin publicar, hay cambios importantes en las próximas publicaciones"
+author: "David Humberto Jiménez S."
+date: "2026-02-05"
+date-modified: ""
+categories: [visualization, spanish]
+image: "dudoso.jpeg"
+---
+
+# Quiubo
+
+Han pasado muchas cosas desde la última públicación y habrá cambios en el blog. ¡Todo es para mejor! En esta entrada voy a exponer una diatriba sobre el _self-hosting_, los [_jardines digitales_](https://maggieappleton.com/garden-history), _home-labs_ y un resumen sobre los cambios en el blog.
+
+Si estás leyendo esto, lo más probable es que te interesen los cambios. Y para mí es lo más fácil de explicar y lo que tiene más sentido. Pero iba a ser una entrada muy corta. Además, creo que esta primera entrada de esta nueva etapa es el mejor momento para discutir las razones que llevan a los combios y a la posterior diatriba. 
+
+## Cambios
+
+El primer, y fundamental, cambio que experimenta este blog, es que ya no se publicará a través de las páginas de github (github.io). Ahora, el blog está como un repositorio de github (una buena práctica para mantener control de versiones para repositorios de código), pero es publicado en mi dominio (por eso la dirección ahora es [blog.dhjs.org](blog.dhjs.org)). 
+
+El segundo gran cambio es a futuro: los próximos análisis, curiosidades y explicaciones en las nuevas entradas estarán acompañadas (en su mayoría) de [_shiny apps_](https://shiny.posit.co/r/getstarted/). Es decir, mi objetivo es crear aplicaciones web interactivas que tengan sentido para los problemas que aquí se analizan y para las personas no usuarias de datos. 
+
+Durante 2024 en mi trabajo empecé a trabajar con shiny, como se puede suponer en la [última entrada publicada](https://blog.dhjs.org/posts/shiny/). Pero en ese momento, y hasta hace poco, solo sabía utilizar [shinyapps.io](https://www.shinyapps.io/) que es una gran manera de empezar a practiar el ciclo completo para generar una aplicación web; sin embargo, dado que no creo que el servicio de Software as a Service y su costo se adapten a mis necesidades como politólogo que hace datos (no quería pagar 50 dólares al mes para hacer uan shiny al mes, máximo) tuve que buscar alternativas. Esa alternativa fue conseguir mi propio servidor y un dominio para poder tener mis aplicaciones, y de una vez el blog, sobre esto va mi diatriba. 
+
+### Chainis
+
+Ahora bien, ahora tengo más aplicaciones (algunas para mi nuevo trabajo), cuya lista iré actualizando aquí (y quizas en otra entrada exclusiva), actualmente no todas mis aplicaciones están en el nuevo servidor, por lo que verán algunas en shinyapss.io y otras en dhjs.org: 
+
+- [Buscador de SIP por palabra](https://dhjsanchez.shinyapps.io/test/)
+- [Personas registradas en el IMSS-Bienestar](https://registros.dhjs.org/) (Los números son ficticios)
+- [Mapa de cuidados de la CDMX](https://dhjsanchez.shinyapps.io/Mapa_Dataton_cuidado/) (Ejercicio para el Datatón: Economía de cuidados 2024)
+- [PoC: Mapa de reportes](https://dhjsanchez.shinyapps.io/Mapa-reportes/) (Proof of Concept/Prueba de concepto sobre un mapa de seguimiento para los reportes realizados en clínicas del IMSS-Bienestar)
+- [Tablero de seguimiento de fondos](https://fondos.dhjs.org/) (datos públicos)
+
+## Jardínes digitales, home-lasb y self-hosting
+
+Hay una corriente de personas que están tratando de crear espacios personales en internet de acuerdo con sus intereses y habilidades. Estos espacios son llamados "Jardines digitales" y su lógica es definida por cada jardinerx. A diferencia de las plataformas, que tienen una plantilla definida para el tipo de contenidos, los jardines crecen a su manera. Debido a que son lugares personalizados, esto implica conocimientos técnicos, pero los contenidos siguen una estructura mínima estilo blog.
+
+Al mismo tiempo, a ratos, he estado leyendo [Tecnofeudalismo](https://traficantes.net/libros/tecnofeudalismo-0) cuya tesis central es que la economía actual está basada en la atención (marketing) y los beneficios monetarios son consecuencia del aprovechamiento de este mercado de la atención para vender bienes o servicios a través de plataformas autorizadas y no se puede tener presencia digital independientemente de las plataformas (feudo digital). 
+
+Esto me ha llevado a buscar alternativas al uso de las plataformas digitales, y en ese camino conocí los [_home-lab_](https://www.reddit.com/r/homelab/comments/15jt90s/new_rhomelab_users_start_here/). Estos _laboratorios_ son computadoras que, usualmente, serán utilizadas para alguno o varios propósitos: redes, respaldos, self_hosting, etc. En mi caso particular, lo que yo necesitaba era tener un lugar donde poder seguir practicando con _shinyapps_ así que reutilicé una laptop vieja, le instalé ubuntu server y empecé a jugar. Esto fue después de varios meses de entender a lo que me iba a enfrentar (y no fue suficiente, uno nunca está totalmente preparado para lo que viene pero lo importante es seguir y buscar ayuda). 
+
+No digo que todo el mundo deba hacer lo mismo, pero creo que vale la pena empezar a buscar alternativas a las plataformas que nos han quitado mucho. Como dice mi psicológa, "no hay crecimiento sin incomodidad". Además, al utilizar software libre y _open source_ hay una comunidad muy amplia que tiene o ha tenido los mismos problemas, o similares. También hay alternativas de equipo y software privativo, también es un buen lugar para empezar, si puedes costearlo. La verdad yo utilicé mucho chat-GPT porque soy politólogo pero sabía que quería hacer y podía pensar criticamente.
+
+Y para resolver esa necesidad tuve que agregar la compra del uso de un dominio. A diferencia de shinyapps.io, en cloudflare solo tengo que pagar 10 dólares al año para mantener el uso exclusivo de dhjs.org. Si bien solamente son el _home-lab_ pude seguir trabajando con aplicaciones, no podía tener retro de otras personas, especialmente porque no llevo mi laptop a todos lados. Además, puedes poner otras cosas ya que inviertes tanto tiempo en esto. Por ejemplo, tengo un servidor de [jellyfin](https://jellyfin.org/) donde respaldo todas las películas físicas que tengo para verlas (y porque me parece una estúpidez pagar tantas suscripciones a varios servicios de streaming). 
+
+Con todo esto lo que pretendo es hacer que usted estimable lector se cuestione que tantos servicios en la nube paga y por qué. 
+
+## Gracias
+
+Si usted leyó estas líneas, sientase con la libertad de contactarme si puedo ayudarle con algo. Mis DM siempre están [abiertos](https://x.com/dhumbertoj)
